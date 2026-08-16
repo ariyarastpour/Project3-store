@@ -1,2 +1,2 @@
-# Project3-store
-design store site withe django framework
+# پروژه X
+⚠️ این پروژه هنوز در مرحله توسعه اولیه است و ممکن است ناپایدار باشد.
