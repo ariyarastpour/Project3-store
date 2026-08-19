@@ -7,7 +7,7 @@ from django.dispatch import receiver
 class UserManager(BaseUserManager):
     def create_user(self, email, password, **extra_fields):
         if not email:
-            raise ValueError(_("The email must be set!"))
+            raise ValueError(_("ایمیل خود را وارد کنید!"))
         email = self.normalize_email(email)
         user = self.model(email=email, **extra_fields)
         user.set_password(password)
@@ -20,9 +20,9 @@ class UserManager(BaseUserManager):
         extra_fields.setdefault('is_superuser', True)
 
         if extra_fields.get('is_staff') is not True:
-            raise ValueError(_("Superuser must have is_staff=True."))
+            raise ValueError(_("گزینه is_staff را فعال کنید!"))
         if extra_fields.get('is_superuser') is not True:
-            raise ValueError(_("Superuser must have is_superuser=True."))
+            raise ValueError(_("گزینه ی is_superuser را فعال کنید!"))
         return self.create_user(email, password, **extra_fields)
 
 class User(AbstractBaseUser, PermissionsMixin):
