@@ -1,0 +1,112 @@
+{% extends "dashboard/admin/base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="card">
+    <!-- Header -->
+    <div class="card-header border-bottom">
+      <h5 class="card-header-title">ویرایش/ساخت محصول</h5>
+    </div>
+    <!-- End Header -->
+
+    <!-- Body -->
+    <div class="card-body">
+      <form action="." method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="row d-flex ">
+          <div class="col-md-6 mb-3">
+            <label >نام محصول</label>
+            {{form.title}}
+          </div>
+          <div class="col-md-6 mb-3">
+            <label>اسلاگ محصول</label>
+            {{form.slug}}
+          </div>
+          <div class="col-md-6 mb-3">
+            <label>تعداد</label>
+            {{form.stock}}
+          </div>
+
+          <div class="col-md-6 mb-3">
+            <label>وضعیت</label>
+            {{form.status}}
+          </div>
+          <div class="col-md-6 mb-3">
+            <label for="cat-id">دسته بندی</label>
+            <br>
+            {{form.category}}
+        </div>
+          <div class="col-md-4 mb-3">
+            <label>قیمت</label>
+            {{form.price}}
+          </div>
+          <div class="col-md-2 mb-3">
+            <label>درصد تخفیف</label>
+            {{form.discount_percent}}
+          </div>
+
+          <div class="col-md-12 mb-3">
+            <label>توضیحات</label>
+            {{form.description}}
+            <!-- <div class="quill-custom">
+                <div class="js-quill" style="height: 15rem;" data-hs-quill-options='{
+                     "placeholder": "Type your message...",
+                      "modules": {
+                        "toolbar": [
+                          ["bold", "italic", "underline", "strike", "link", "image", "blockquote", "code", {"list": "bullet"}]
+                        ]
+                      }
+                     }'>ذهن خلاق در Htmlstream
+                </div>
+            </div> -->
+          </div>
+
+          <div class="col-md-12 mb-3">
+            <label>تصویر محصول</label>
+            {{form.image}}
+          </div>
+
+          <div class=" d-flex pt-5 justify-content-end">
+            <a class="btn btn-danger ms-3" href="{% url 'dashboard:admin:delete-prod' pk=object.pk %}">حذف</a>
+            <a class="btn btn-secondary ms-3" href="{% url 'dashboard:admin:show-prod' %}">بازگشت</a>
+            <button type="submit" class="btn btn-primary ms-3">ثبت تغییرات</button>
+          </div>
+        </div>
+    </form>
+  </div>
+  <div class="card-footer">
+{% endblock content %}
+
+{% block extera-js %}
+<script>
+  function slugify(titleStr) {
+      titleStr = titleStr.replace(/^\s+|\s+$/g, '');
+      titleStr = titleStr.toLowerCase();
+      //persian support
+      titleStr = titleStr.replace(/[^a-z0-9_\s-ءاأإآؤئبتثجحخدذرزسشصضطظعغفقكلمنهويةى]#u/, '')
+          // Collapse whitespace and replace by -
+          .replace(/\s+/g, '-')
+          // Collapse dashes
+          .replace(/-+/g, '-');
+      slugStr = titleStr;
+      return slugStr;
+  }
+      $(document).ready(function(){
+          $('#titleInput').on('input', function(){
+              var inputText = $(this).val();
+              // Perform an action with the text
+              var slugifyText = slugify(inputText);
+              $('#slugInput').val(slugifyText);
+              // Add your custom action here
+          });
+      });
+  </script>
+
+<script>
+  $(document).ready(function() {
+      VirtualSelect.init({
+          ele: '#cat-id'
+      });
+  });
+</script>
+{% endblock extera-js %}
