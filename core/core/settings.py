@@ -90,23 +90,20 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 # Internationalization
-LANGUAGE_CODE = 'fa-ir'  # تغییر به فارسی
-TIME_ZONE = 'Asia/Tehran'  # تغییر به تهران
+TIME_ZONE = 'Asia/Tehran'
 USE_I18N = True
 USE_TZ = True
 
-# Static files (CSS, JavaScript, Images)
-STATIC_URL = '/static/'  # اضافه کردن اسلش
+# Static files
+STATIC_URL = '/static/'
 
 # مسیر فایل‌های استاتیک در ریشه پروژه
 STATICFILES_DIRS = [
-    BASE_DIR / 'static',  # اینجا فایل‌های استاتیک خود را قرار دهید
+    BASE_DIR / 'static',
 ]
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-# مسیر جمع‌آوری فایل‌های استاتیک برای production
-#STATIC_ROOT = BASE_DIR / 'staticfiles'  # تغییر نام برای جلوگیری از تداخل
-
-# Media files (آپلود کاربران)
+# Media files
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
@@ -116,8 +113,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Email settings
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
-# User model (در صورت نیاز)
-# AUTH_USER_MODEL = 'accounts.User'
+AUTH_USER_MODEL = 'accounts.User'
 
 #404 
 DEBUG_PROPAGATE_EXCEPTIONS = True
