@@ -4,79 +4,10 @@
 {% comment %} {% load shop_tags %} {% endcomment %}
 {% block content %}
 
-{% hero_slider %}
+{% render_hero_slider %}
 
 
-<!-- Icon Blocks -->
-<div class="border-bottom">
-  <div class="container content-space-2">
-    <div class="row">
-      <div class="col-md-4 mb-7 mb-md-0">
-        <!-- Icon Block -->
-        <div class="d-flex">
-          <div class="flex-shrink-0">
-            <img
-              class="ps-2 avatar avatar-4x3"
-              src="{% static 'svg/illustrations/oc-protected-card.svg' %}"
-              alt="Image Description"
-            />
-          </div>
-          <div class="flex-grow-1 ms-4">
-            <h4 class="mb-1">تسویه حساب ایمن</h4>
-            <p class="small mb-0">تسویه حساب مطمئن تضمینی</p>
-          </div>
-        </div>
-        <!-- End Icon Block -->
-      </div>
-      <!-- End Col -->
-
-      <div class="col-md-4 mb-7 mb-md-0">
-        <!-- Icon Block -->
-        <div class="d-flex">
-          <div class="flex-shrink-0">
-            <img
-              class="ps-2 avatar avatar-4x3"
-              src="{% static 'svg/illustrations/oc-return.svg' %}"
-              alt="Image Description"
-            />
-          </div>
-          <div class="flex-grow-1 ms-4">
-            <h4 class="mb-1">30 روز بازگشت</h4>
-            <p class="small mb-0">
-              پیشنهاد ما به شما بازپرداخت کامل ظرف 30 روز پس از خرید است.
-            </p>
-          </div>
-        </div>
-        <!-- End Icon Block -->
-      </div>
-      <!-- End Col -->
-
-      <div class="col-md-4">
-        <!-- Icon Block -->
-        <div class="d-flex">
-          <div class="flex-shrink-0">
-            <img
-              class="ps-2 avatar avatar-4x3"
-              src="{% static 'svg/illustrations/oc-truck.svg' %}"
-              alt="Image Description"
-            />
-          </div>
-          <div class="flex-grow-1 ms-4">
-            <h4 class="mb-1">ارسال رایگان</h4>
-            <p class="small mb-0">
-              حمل و نقل استاندارد رایگان را به صورت خودکار در هر سفارش دریافت
-              کنید.
-            </p>
-          </div>
-        </div>
-        <!-- End Icon Block -->
-      </div>
-      <!-- End Col -->
-    </div>
-    <!-- End Row -->
-  </div>
-</div>
-<!-- End Icon Blocks -->
+{% render_store_features %}
 
 <!-- Card Grid -->
 <div class="container content-space-2 content-space-lg-3">
@@ -245,66 +176,8 @@
 </div>
 <!-- End Subscribe -->
 
-<!-- Clients -->
-<div class="container content-space-2">
-  <div class="row">
-    <div class="col text-center py-3">
-      <img
-        class="avatar avatar-lg avatar-4x3"
-        src="{% static 'svg/brands/hollister-dark.svg' %}"
-        alt="Logo"
-      />
-    </div>
-    <!-- End Col -->
-
-    <div class="col text-center py-3">
-      <img
-        class="avatar avatar-lg avatar-4x3"
-        src="{% static 'svg/brands/levis-dark.svg' %}"
-        alt="Logo"
-      />
-    </div>
-    <!-- End Col -->
-
-    <div class="col text-center py-3">
-      <img
-        class="avatar avatar-lg avatar-4x3"
-        src="{% static 'svg/brands/new-balance-dark.svg' %}"
-        alt="Logo"
-      />
-    </div>
-    <!-- End Col -->
-
-    <div class="col text-center py-3">
-      <img
-        class="avatar avatar-lg avatar-4x3"
-        src="{% static 'svg/brands/puma-dark.svg' %}"
-        alt="Logo"
-      />
-    </div>
-    <!-- End Col -->
-
-    <div class="col text-center py-3">
-      <img
-        class="avatar avatar-lg avatar-4x3"
-        src="{% static 'svg/brands/nike-dark.svg' %}"
-        alt="Logo"
-      />
-    </div>
-    <!-- End Col -->
-
-    <div class="col text-center py-3">
-      <img
-        class="avatar avatar-lg avatar-4x3"
-        src="{% static 'svg/brands/tnf-dark.svg' %}"
-        alt="Logo"
-      />
-    </div>
-    <!-- End Col -->
-  </div>
-  <!-- End Row -->
-</div>
-<!-- End Clients -->
+{% render_brand_logos %}
+ 
 {% endblock content %}
 
 {% block extera-js %}

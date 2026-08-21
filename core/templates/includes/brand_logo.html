@@ -1,0 +1,30 @@
+{% load static %}
+<!-- Clients -->
+{% if brands %}
+<div class="container content-space-2">
+  <div class="row">
+    
+    {% for brand in brands %}
+    <div class="col text-center py-3">
+      {% if brand.icon %}
+        <img
+          class="avatar avatar-lg avatar-4x3"
+          src="{{ brand.icon.url }}"
+          alt="{{ brand.name }}"
+        />
+      {% else %}
+        <h5 class="text-muted mb-0">{{ brand.name }}</h5>
+      {% endif %}
+    </div>
+    <!-- End Col -->
+    {% empty %}
+    <div class="col-12 text-center text-muted">
+      هنوز برندی ثبت نشده است.
+    </div>
+    {% endfor %}
+
+  </div>
+  <!-- End Row -->
+</div>
+<!-- End Clients -->
+{% endif %}
