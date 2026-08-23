@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
+{% load website_tags %}
 {% load humanize %}
 
 {% block content %}
@@ -17,10 +18,10 @@
             <nav aria-label="breadcrumb">
               <ol class="breadcrumb mb-0 ">
                 <li class="breadcrumb-item ps-2">
-                  <a href="/index.html">خرید کنید</a>
+                  <a href="{% url 'shop:list' %}">خرید کنید</a>
                 </li>
                 <li class="breadcrumb-item">
-                  <a href="/products-grid.html">محصولات</a>
+                  <a href="{% url 'shop:list_grid' %}">محصولات</a>
                 </li>
                 <li class="breadcrumb-item active" aria-current="page">توری</li>
               </ol>
@@ -168,14 +169,14 @@
           <!-- End Row -->
 
           <div class="row row-cols-sm-2 row-cols-md-3 mb-10">
-            {% for object in object_list %}
+            {% for product in products %}
             <div class="col mb-4">
               <!-- Card -->
               <div class="card card-bordered shadow-none text-center h-100">
                 <div class="card-pinned">
-                  <img class="card-img-top" src="http://127.0.0.1:9000/media/{{object.product_image_related.all.first.image}}" alt="Image Description">
-                  <h6>{{object.product_image_related.all.first.image}}</h6>
-                  {% if not object.stock %}
+                  <img class="card-img-top" src="{{product.image.url}}" alt="Image Description">
+                  <h6>{{product.product_image_related.all.first.image}}</h6>
+                  {% if not product.stock %}
                   <div class="card-pinned-top-start">
                     <span class="badge bg-danger rounded-pill">اتمام موجودی</span>
                   </div>
@@ -183,8 +184,8 @@
 
                   {% if request.user.is_authenticated %}
                   <div class="card-pinned-top-end">
-                    <button type="button" class="btn btn-outline-danger btn-xs btn-icon rounded-circle {% if object.id in is_wished %}active{% endif %}" 
-                    data-bs-toggle="tooltip" data-bs-placement="top" title="افزودن به علایق" onclick="modify_wish(this,`{{object.id}}`)">
+                    <button type="button" class="btn btn-outline-danger btn-xs btn-icon rounded-circle {% if product.id in is_wished %}active{% endif %}" 
+                    data-bs-toggle="tooltip" data-bs-placement="top" title="افزودن به علایق" onclick="modify_wish(this,`{{product.id}}`)">
                       <i class="bi-heart"></i>
                     </button>
                   </div>
@@ -192,7 +193,7 @@
                 </div>
                 <div class="card-body">
                   <div class="mb-2">
-                    {% for cat in object.category.all %}
+                    {% for cat in product.category.all %}
                     <a class="link-sm link-secondary" href="#">{{cat}}</a>
                     {% if not forloop.last %}
                       ،
@@ -201,12 +202,12 @@
                   </div>
 
                   <h4 class="card-title">
-                    <a class="text-dark" href="{% url 'shop:detail' slug=object.slug %}">{{object.title}}</a>
+                    <a class="text-dark" href="shop:detail' slug=product.slug">{{product.title}}</a>
                   </h4>
-                  {% if object.discount_percent %}
-                  <p class="card-text text-dark">{{object.offer|intcomma}} <span class="text-body ms-1"><del>{{object.price|intcomma}} تومان</del></span></p>
+                  {% if product.discount_percent %}
+                  <p class="card-text text-dark">{{product.offer|intcomma}} <span class="text-body ms-1"><del>{{product.price|intcomma}} تومان</del></span></p>
                   {% else %}
-                  <p class="card-text text-dark">{{object.price|intcomma}} تومان</p>
+                  <p class="card-text text-dark">{{product.price|intcomma}} تومان</p>
                   {% endif %}
                 </div>
 
@@ -215,7 +216,7 @@
                   <div class="d-inline-flex align-items-center mb-3" href="#">
                     <div class="d-flex gap-1 mb-3">
                       {% for rate in '12345' %}
-                      {% if object.avg_rate >= rate|add:0 %}
+                      {% if product.avg_rate >= rate|add:0 %}
                       <i class="bi bi-star-fill text-warning"></i>
                       {% else %}
                       <i class="bi bi-star text-warning"></i>
@@ -224,10 +225,10 @@
                     </div>
                   </div>
                   <!-- End Rating -->
-                   {% if not object.stock %}
+                   {% if not product.stock %}
                    <button type="button" class="btn btn-outline-primary btn-sm btn-transition rounded-pill">موجود شد بهم اطلاع بده</button>
                    {% else %}
-                   <button type="button" class="btn btn-outline-primary btn-sm btn-transition rounded-pill" onclick="addProd(`{{object.id}}`)">افزودن به سبد خرید</button>
+                   <button type="button" class="btn btn-outline-primary btn-sm btn-transition rounded-pill" onclick="addProd(`{{product.id}}`)">افزودن به سبد خرید</button>
                    {% endif %}
                 </div>
               </div>
@@ -313,42 +314,8 @@
     </div>
     <!-- End Subscribe -->
 
-    <!-- Clients -->
-    <div class="container content-space-2">
-      <div class="row">
-        <div class="col text-center py-3">
-          <img class="avatar avatar-lg avatar-4x3" src="{% static '/svg/brands/hollister-dark.svg' %}" alt="Logo">
-        </div>
-        <!-- End Col -->
+  {% render_brand_logos %}
 
-        <div class="col text-center py-3">
-          <img class="avatar avatar-lg avatar-4x3" src="{% static '/svg/brands/levis-dark.svg' %}" alt="Logo">
-        </div>
-        <!-- End Col -->
-
-        <div class="col text-center py-3">
-          <img class="avatar avatar-lg avatar-4x3" src="{% static '/svg/brands/new-balance-dark.svg' %}" alt="Logo">
-        </div>
-        <!-- End Col -->
-
-        <div class="col text-center py-3">
-          <img class="avatar avatar-lg avatar-4x3" src="{% static '/svg/brands/puma-dark.svg' %}" alt="Logo">
-        </div>
-        <!-- End Col -->
-
-        <div class="col text-center py-3">
-          <img class="avatar avatar-lg avatar-4x3" src="{% static '/svg/brands/nike-dark.svg' %}" alt="Logo">
-        </div>
-        <!-- End Col -->
-
-        <div class="col text-center py-3">
-          <img class="avatar avatar-lg avatar-4x3" src="{% static '/svg/brands/tnf-dark.svg' %}" alt="Logo">
-        </div>
-        <!-- End Col -->
-      </div>
-      <!-- End Row -->
-    </div>
-    <!-- End Clients -->
 {% endblock content %}
 {% block extera-js %}
 

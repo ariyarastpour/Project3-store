@@ -1,0 +1,60 @@
+{% load static %}
+{% load website_tags %} <!-- برای استفاده از تگ render_header_menu -->
+
+<!-- ========== HEADER ========== -->
+<header id="header" class="navbar navbar-expand-lg navbar-end navbar-light">
+  <div class="container">
+    <nav class="js-mega-menu navbar-nav-wrap">
+      <!-- Default Logo -->
+      <a class="navbar-brand" href="{% url 'website:home' %}" aria-label="Front">
+        <img class="navbar-brand-logo" src="{% static 'svg/logos/logo.svg' %}" alt="Logo">
+      </a>
+      <!-- End Default Logo -->
+
+      <!-- Toggler -->
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown"
+        aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-default">
+          <i class="bi-list"></i>
+        </span>
+        <span class="navbar-toggler-toggled">
+          <i class="bi-x"></i>
+        </span>
+      </button>
+      <!-- End Toggler -->
+
+      <!-- Collapse -->
+      <div class="collapse navbar-collapse" id="navbarNavDropdown">
+        <ul class="navbar-nav">
+          {% render_header_menu %}
+          
+          {% comment %} <!-- Shopping Cart -->
+          <a href="{% url 'website:home' %}" class="btn btn-ghost-secondary btn-icon">
+            <i class="bi-basket"></i>
+            <span class="cart-item-count" id="cart-item-count">{{cart.get_cart_quantity}}</span>
+          </a>
+          <!-- End Shopping Cart -->
+          {% if request.user.is_authenticated %}
+          <button class="btn btn-ghost-secondary btn-icon" id="dropdownMenuLink"
+          data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <span class="avatar avatar-sm avatar-circle">
+              <img class="avatar-img" src="http://127.0.0.1:9000/media/{{request.user.user_profile.avatar}}"
+                  alt="Image Description">
+          </span>
+          </button>
+
+          <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+          <a class="dropdown-item" href="{% url 'dashboard:check' %}">پروفایل</a>
+          <a class="dropdown-item" href="{% url 'logout' %}">خروج</a>
+          </div>
+          {% else %}
+          <a class="btn btn-primary btn-transition" href="{% url 'login' %}">ورود</a>
+          {% endif %}
+          </li>
+        </ul>
+      </div> {% endcomment %}
+      <!-- End Collapse -->
+    </nav>
+  </div>
+</header>
+<!-- ========== END HEADER ========== -->

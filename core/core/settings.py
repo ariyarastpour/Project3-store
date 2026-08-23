@@ -24,10 +24,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'website',  
+    'django.contrib.humanize',
     #'cart',    
     #'dashboard 
     #'order',   
-    #'shop',    
+    'shop',    
     'accounts', 
 ]
 
@@ -47,9 +48,9 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-            BASE_DIR / 'templates',  # مسیر اصلی تمپلیت‌ها
+            BASE_DIR / 'templates',
         ],
-        'APP_DIRS': True,  # این باعث می‌شود تمپلیت‌های هر اپ پیدا شوند
+        'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.debug',
@@ -116,4 +117,4 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 AUTH_USER_MODEL = 'accounts.User'
 
 #404 
-DEBUG_PROPAGATE_EXCEPTIONS = True
+# DEBUG_PROPAGATE_EXCEPTIONS = True

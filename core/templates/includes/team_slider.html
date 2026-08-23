@@ -1,0 +1,68 @@
+{% load static %}
+<!-- Team -->
+<div class="container content-space-2 content-space-lg-3">
+  <!-- Heading -->
+  <div class="w-md-75 w-lg-50 text-center mx-md-auto mb-5 mb-md-9">
+    <span class="text-cap">تیم ما</span>
+    <h2>ذهن های خلاق</h2>
+  </div>
+  <!-- End Heading -->
+
+  <!-- Team Members Grid -->
+  <div class="row gx-3 mb-5">
+    
+    {% for member in members %}
+    <div class="col-sm-6 col-lg-3 mb-3">
+      <!-- Card -->
+      <div class="card card-transition h-100">
+        <div class="card-body">
+          <div class="avatar avatar-lg avatar-circle mb-4">
+            <img class="avatar-img" src="{{ member.image.url }}" alt="{{ member.name }}">
+          </div>
+
+          <span class="card-subtitle">{{ member.role }}</span>
+          <h4 class="card-title">{{ member.name }}</h4>
+          <p class="card-text">{{ member.bio }}</p>
+        </div>
+
+        <div class="card-footer pt-0">
+          <!-- Socials -->
+          <ul class="list-inline mb-0">
+            <li class="list-inline-item">
+              <a class="btn btn-outline-primary btn-xs btn-icon rounded" href="#">
+                <i class="bi-facebook"></i>
+              </a>
+            </li>
+            <li class="list-inline-item">
+              <a class="btn btn-outline-primary btn-xs btn-icon rounded" href="#">
+                <i class="bi-google"></i>
+              </a>
+            </li>
+            <li class="list-inline-item">
+              <a class="btn btn-outline-primary btn-xs btn-icon rounded" href="#">
+                <i class="bi-twitter"></i>
+              </a>
+            </li>
+          </ul>
+          <!-- End Socials -->
+        </div>
+      </div>
+      <!-- End Card -->
+    </div>
+    <!-- End Col -->
+    {% endfor %}
+
+  </div>
+  <!-- End Row -->
+
+  <!-- Card Info -->
+  <div class="text-center">
+    <div class="card card-info-link card-sm">
+      <div class="card-body">
+        میخواهی با ما کار کنی؟ <a class="card-link ms-2" href="./page-hire-us.html">استخدام می کنیم<span class="bi-chevron-left small me-1"></span></a>
+      </div>
+    </div>
+  </div>
+  <!-- End Card Info -->
+</div>
+<!-- End Team -->

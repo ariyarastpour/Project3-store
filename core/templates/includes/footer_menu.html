@@ -1,0 +1,11 @@
+{% for column_data in footer_data %}
+<div class="col-6 col-md-4 col-lg-3 mb-5 mb-lg-0">
+    <h5>{{ column_data.column.title }}</h5>
+    
+    <ul class="list-unstyled list-py-1">
+        {% for link in column_data.links %}
+        <li><a class="link-sm text-secondary" href="{{ link.url }}">{{ link.title }}</a></li>
+        {% endfor %}
+    </ul>
+</div>
+{% endfor %}

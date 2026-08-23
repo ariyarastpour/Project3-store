@@ -1,6 +1,55 @@
 from django.db import models
-from django.utils import timezone
 
+# Base.html
+class HeaderMenuItem(models.Model):
+    title = models.CharField(max_length=200, verbose_name="عنوان لینک")
+    url = models.CharField(max_length=255, verbose_name="آدرس لینک")
+    order = models.PositiveIntegerField(default=0, verbose_name="ترتیب نمایش")
+    is_active = models.BooleanField(default=True, verbose_name="وضعیت نمایش")
+    created_date = models.DateTimeField(auto_now_add=True)
+    updated_date = models.DateTimeField(auto_now=True)
+    published_date = models.DateTimeField()
+
+    class Meta:
+        ordering = ['order']
+
+    def __str__(self):
+        return self.title
+
+
+class FooterColumn(models.Model):
+    title = models.CharField(max_length=200, verbose_name="عنوان ستون")
+    order = models.PositiveIntegerField(default=0, verbose_name="ترتیب نمایش")
+    is_active = models.BooleanField(default=True, verbose_name="وضعیت نمایش")
+    created_date = models.DateTimeField(auto_now_add=True)
+    updated_date = models.DateTimeField(auto_now=True)
+    published_date = models.DateTimeField()
+
+    class Meta:
+        ordering = ['order']
+
+    def __str__(self):
+        return self.title
+
+
+class FooterLink(models.Model):
+    column = models.ForeignKey(FooterColumn, on_delete=models.CASCADE, related_name='links', verbose_name="ستون والد")
+    title = models.CharField(max_length=200, verbose_name="عنوان لینک")
+    url = models.CharField(max_length=255, verbose_name="آدرس لینک")
+    order = models.PositiveIntegerField(default=0, verbose_name="ترتیب نمایش")
+    is_active = models.BooleanField(default=True, verbose_name="وضعیت نمایش")
+    created_date = models.DateTimeField(auto_now_add=True)
+    updated_date = models.DateTimeField(auto_now=True)
+    published_date = models.DateTimeField()
+
+    class Meta:
+        ordering = ['order']
+
+    def __str__(self):
+        return f"{self.column.title} - {self.title}"
+    
+
+# Index.html
 class Heroslider(models.Model):
     title = models.CharField(max_length=200)
     image = models.ImageField(upload_to='staticfiles/img/mockups',default='staticfiles/img/600x600/img1.jpg')
@@ -12,6 +61,7 @@ class Heroslider(models.Model):
 
     def __str__(self):
         return self.title
+
 
 class HeroBottomIcon(models.Model):
     heroslider = models.ForeignKey(Heroslider, on_delete=models.CASCADE, related_name='bottom_icons')
@@ -58,3 +108,22 @@ class BrandLogo(models.Model):
     def __str__(self):
         return self.name
     
+
+#About.html
+class TeamMember(models.Model):
+    name = models.CharField(max_length=200, verbose_name="نام و نام خانوادگی")
+    role = models.CharField(max_length=200, verbose_name="سمت (مثلاً: مدیر پروژه)")
+    bio = models.TextField(blank=True, null=True, verbose_name="بیوگرافی کوتاه")
+    image = models.ImageField(upload_to='team/', verbose_name="تصویر پروفایل")
+    order = models.PositiveIntegerField(default=0, verbose_name="ترتیب نمایش")
+    is_active = models.BooleanField(default=True, verbose_name="وضعیت نمایش")
+    created_date = models.DateTimeField(auto_now_add=True)
+    updated_date = models.DateTimeField(auto_now=True)
+    published_date = models.DateTimeField()
+
+    class Meta:
+        ordering = ['order']
+
+
+    def __str__(self):
+        return self.name
