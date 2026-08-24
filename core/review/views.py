@@ -1,3 +1,29 @@
-from django.shortcuts import render
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views.generic import CreateView
+from django.contrib import messages
+from django.shortcuts import redirect
+from django.urls import reverse_lazy
+from .models import Review
+from .forms import ReviewForm
+from accounts.models import Profile
 
-# Create your views here.
+class ReviewView(LoginRequiredMixin, CreateView):
+    http_method_names = ["post"]
+    model = Review
+    form_class = ReviewForm
+    login_url = '/shop/products/'
+
+    def form_valid(self, form):
+        profile = Profile.objects.get(user=self.request.user)
+        form.instance.user = profile
+        review = form.save()
+        messages.success(self.request ,"دیدگاه شما با موفقیت ثبت شد")
+        return redirect(
+            reverse_lazy("shop:detail", kwargs={"pk":review.product.id})
+        )
+    
+    def form_invalid(self, form):
+        for field,errors in form.errors.items():
+            for error in errors:
+                messages.error(self.request, error)
+        return redirect(self.request.META.get("HTTP_REFERER"))

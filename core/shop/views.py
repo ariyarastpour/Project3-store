@@ -3,6 +3,7 @@ from django.views.generic import TemplateView, ListView, DetailView
 from .models import *
 from django.db.models import Count, Q
 from django.core.exceptions import FieldError
+from review.models import Review
 
 
 class ListViewModel(ListView):
@@ -80,3 +81,24 @@ class DetailViewModel(DetailView):
     context_object_name = 'product'
     template_name = "shop/products-detail.html"
     pk_url_kwarg = 'pk'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        one_star = Count("rate",filter=Q(rate=1))
+        two_star = Count("rate",filter=Q(rate=2))
+        three_star = Count("rate",filter=Q(rate=3))
+        four_star = Count("rate",filter=Q(rate=4))
+        five_star = Count("rate",filter=Q(rate=5))
+        product = self.get_object()
+        reviews = Review.objects.filter(product=product)
+        context["reviews"] = reviews
+        context["reviews_status"] = reviews.aggregate(
+            one_star=one_star,
+            two_star=two_star,
+            three_star=three_star,
+            four_star=four_star,
+            five_star=five_star
+        )
+
+        return context
+    

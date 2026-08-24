@@ -4,6 +4,7 @@ from django.dispatch import receiver
 from django.db.models.signals import post_save
 from django.db.models import Avg
 from accounts.models import Profile
+from django.utils import timezone
 from shop.models import Product
 
 class Review(models.Model):
@@ -15,7 +16,7 @@ class Review(models.Model):
     )
     created_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
-    published_date = models.DateTimeField()
+    published_date = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
         return f"{self.user} - {self.product}"
