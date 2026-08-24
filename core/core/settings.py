@@ -27,7 +27,8 @@ INSTALLED_APPS = [
     'django.contrib.humanize',
     #'cart',    
     #'dashboard 
-    #'order',   
+    #'order',  
+    'review', 
     'shop',    
     'accounts', 
 ]

@@ -41,6 +41,9 @@ class TeamMemberAdmin(admin.ModelAdmin):
     list_filter = ('role',)
     ordering = ('name',)
 
+class ContactMessageAdmin(admin.ModelAdmin):
+    search_fields = ('name','email')
+
 
 admin.site.register(HeaderMenuItem,HeaderMenuItemAdmin)
 admin.site.register(FooterColumn,FooterColumnAdmin)
@@ -49,4 +52,5 @@ admin.site.register(BrandLogo,BrandLogoAdmin)
 admin.site.register(Heroslider,HerosliderAdmin)
 admin.site.register(StoreFeature,StoreFeaturesAdmin)
 admin.site.register(HeroBottomIcon)
+admin.site.register(ContactMessage,ContactMessageAdmin)
 admin.site.register(TeamMember,TeamMemberAdmin)

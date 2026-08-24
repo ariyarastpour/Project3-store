@@ -114,6 +114,7 @@
         </div>
         <!-- End Hero -->
 
+        
         <!-- Contact Form -->
         <div class="container content-space-1 content-space-lg-1">
             <div class="mx-auto" style="max-width: 35rem;">
@@ -130,14 +131,25 @@
                         <!-- Form -->
                         <form action="." method="post">
                             {% csrf_token %}
+                            
+                            <!-- نمایش خطاهای کلی فرم -->
+                            {% if form.non_field_errors %}
+                            <div class="alert alert-danger">
+                                {% for error in form.non_field_errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+
                             <div class="row gx-3">
                                 <div class="col-sm-6">
                                     <!-- Form -->
                                     <div class="mb-3">
-                                        <label class="form-label" for="hireUsFormFirstName">نام</label>
-                                        <input type="text" class="form-control form-control-lg"
-                                            name="name" id="hireUsFormFirstName"
-                                            placeholder="نام" aria-label="First name">
+                                        <label class="form-label" for="{{ form.name.id_for_label }}">نام</label>
+                                        {{ form.name }}
+                                        {% if form.name.errors %}
+                                        <div class="text-danger small mt-1">{{ form.name.errors }}</div>
+                                        {% endif %}
                                     </div>
                                     <!-- End Form -->
                                 </div>
@@ -146,10 +158,11 @@
                                 <div class="col-sm-6">
                                     <!-- Form -->
                                     <div class="mb-3">
-                                        <label class="form-label" for="hireUsFormLasttName">نام خانوادگی</label>
-                                        <input type="text" class="form-control form-control-lg"
-                                            name="last_name" id="hireUsFormLasttName"
-                                            placeholder="نام خانوادگی" aria-label="Last name">
+                                        <label class="form-label" for="{{ form.last_name.id_for_label }}">نام خانوادگی</label>
+                                        {{ form.last_name }}
+                                        {% if form.last_name.errors %}
+                                        <div class="text-danger small mt-1">{{ form.last_name.errors }}</div>
+                                        {% endif %}
                                     </div>
                                     <!-- End Form -->
                                 </div>
@@ -161,10 +174,11 @@
                                 <div class="col-sm-6">
                                     <!-- Form -->
                                     <div class="mb-3">
-                                        <label class="form-label" for="hireUsFormWorkEmail">آدرس ایمیل</label>
-                                        <input type="email" class="form-control form-control-lg"
-                                            name="email" id="hireUsFormWorkEmail"
-                                            placeholder="email@site.com" aria-label="email@site.com">
+                                        <label class="form-label" for="{{ form.email.id_for_label }}">آدرس ایمیل</label>
+                                        {{ form.email }}
+                                        {% if form.email.errors %}
+                                        <div class="text-danger small mt-1">{{ form.email.errors }}</div>
+                                        {% endif %}
                                     </div>
                                     <!-- End Form -->
                                 </div>
@@ -173,11 +187,12 @@
                                 <div class="col-sm-6">
                                     <!-- Form -->
                                     <div class="mb-3">
-                                        <label class="form-label" for="hireUsFormPhone">شماره همراه <span
+                                        <label class="form-label" for="{{ form.phone_number.id_for_label }}">شماره همراه <span
                                                 class="form-label-secondary">(اختیاری)</span></label>
-                                        <input type="text" class="form-control form-control-lg"
-                                            name="phone_number" id="hireUsFormPhone"
-                                            placeholder="+9891200000">
+                                        {{ form.phone_number }}
+                                        {% if form.phone_number.errors %}
+                                        <div class="text-danger small mt-1">{{ form.phone_number.errors }}</div>
+                                        {% endif %}
                                     </div>
                                     <!-- End Form -->
                                 </div>
@@ -187,10 +202,11 @@
 
                             <!-- Form -->
                             <div class="mb-3">
-                                <label class="form-label" for="hireUsFormDetails">توضیحات</label>
-                                <textarea class="form-control form-control-lg" name="description"
-                                    id="hireUsFormDetails" placeholder="توضیحات خود را وارد نمایید"
-                                    aria-label="Tell us about your ..." rows="4"></textarea>
+                                <label class="form-label" for="{{ form.description.id_for_label }}">توضیحات</label>
+                                {{ form.description }}
+                                {% if form.description.errors %}
+                                <div class="text-danger small mt-1">{{ form.description.errors }}</div>
+                                {% endif %}
                             </div>
                             <!-- End Form -->
 
@@ -209,4 +225,5 @@
             </div>
         </div>
         <!-- End Contact Form -->
+         
 {% endblock content %}

@@ -49,6 +49,20 @@ class Product(models.Model):
         return reverse("shop:detail", kwargs={"slug": self.slug})
     
 
+class ProductGallery(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='gallery_images')
+    image = models.ImageField(upload_to='img/product-gallery/')
+    alt_text = models.CharField(max_length=200, blank=True, null=True)
+
+    order = models.PositiveIntegerField(default=0, verbose_name="ترتیب نمایش")
+
+    class Meta:
+        ordering = ['order']
+
+    def __str__(self):
+        return f"{self.product.title} - Image {self.order}"
+
+
 class WishList(models.Model):
     user = models.ForeignKey(Profile, on_delete=models.PROTECT)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)

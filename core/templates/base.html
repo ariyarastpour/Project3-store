@@ -95,9 +95,10 @@
       // =======================================================
       new HSGoTo('.js-go-to')
 
-      // INITIALIZATION OF SWIPER
       // =======================================================
-      var sliderThumbs = new Swiper('.js-swiper-shop-hero-thumbs', {
+      // INITIALIZATION OF HERO SWIPER
+      // =======================================================
+      var heroThumbs = new Swiper('.js-swiper-shop-hero-thumbs', {
         watchSlidesVisibility: true,
         watchSlidesProgress: true,
         history: false,
@@ -123,7 +124,7 @@
         },
       });
 
-      var swiper = new Swiper('.js-swiper-shop-classic-hero', {
+      var heroSwiper = new Swiper('.js-swiper-shop-classic-hero', {
         autoplay: true,
         loop: true,
         navigation: {
@@ -131,7 +132,30 @@
           prevEl: '.js-swiper-shop-classic-hero-button-prev',
         },
         thumbs: {
-          swiper: sliderThumbs
+          swiper: heroThumbs
+        }
+      });
+
+      // =======================================================
+      // INITIALIZATION OF PRODUCT GALLERY SWIPER
+      // =======================================================
+      var productThumbs = new Swiper('.js-swiper-shop-product-thumb', {
+        slidesPerView: 3,
+        spaceBetween: 10,
+        watchSlidesVisibility: true,
+        watchSlidesProgress: true,
+      });
+
+      var productSwiper = new Swiper('.js-swiper-shop-product', {
+        slidesPerView: 1,
+        spaceBetween: 20,
+        loop: true,
+        navigation: {
+          nextEl: '.js-swiper-shop-product-button-next',
+          prevEl: '.js-swiper-shop-product-button-prev',
+        },
+        thumbs: {
+          swiper: productThumbs  // ✅ حالا درست است!
         }
       });
 
@@ -239,21 +263,6 @@
       }
     });
     }
-
-      // INITIALIZATION OF SWIPER
-      // =======================================================
-      var swiper = new Swiper('.js-swiper-shop-product',{
-        effect: 'fade',
-        autoplay: true,
-        loop: true,
-        navigation: {
-          nextEl: '.js-swiper-shop-product-button-next',
-          prevEl: '.js-swiper-shop-product-button-prev',
-        },
-        thumbs: {
-          swiper: sliderThumbs
-        }
-      });
 
       var sliderThumbs = new Swiper('.js-swiper-shop-product-thumb', {
         slidesPerView: 3,

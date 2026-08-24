@@ -12,11 +12,11 @@
           <!-- Swiper Main Slider -->
           <div class="js-swiper-shop-product swiper">
             <div class="swiper-wrapper">
-              {% for image in object.product_image_related.all %}
+              {% for image in product.gallery_images.all %}
               <!-- Slide -->
               <div class="swiper-slide">
                 <div class="card card-bordered shadow-none">
-                  <img class="card-img" src="http://127.0.0.1:9000/media/{{image.image}}" alt="Image Description">
+                  <img class="card-img" src="{{image.image.url}}" alt="Image Description">
                 </div>
               </div>
               <!-- End Slide -->
@@ -33,15 +33,15 @@
           <div class="position-absolute bottom-0 end-0 start-0 zi-1 p-4">
             <div class="js-swiper-shop-product-thumb swiper" style="max-width: 15rem;">
               <div class="swiper-wrapper">
-                {% for image in object.product_image_related.all %}
-                <!-- Slide -->
-                <div class="swiper-slide">
-                  <a class="avatar avatar-circle" href="javascript:;">
-                    <img class="avatar-img" src="http://127.0.0.1:9000/media/{{image.image}}" alt="Image Description">
-                  </a>
-                </div>
-                <!-- End Slide -->
-                 {% endfor %}
+                {% for image in product.gallery_images.all %}
+                  <!-- Slide -->
+                  <div class="swiper-slide">
+                    <a class="avatar avatar-circle" href="javascript:;">
+                      <img class="avatar-img" src="{{ image.image.url }}" alt="Image Description">
+                    </a>
+                  </div>
+                  <!-- End Slide -->
+                {% endfor %}
               </div>
             </div>
           </div>
@@ -55,21 +55,21 @@
       <!-- Rating -->
       <div class="d-flex gap-1 mb-3">
         {% for rate in '12345' %}
-        {% if object.avg_rate >= rate|add:0 %}
+        {% if product.avg_rate >= rate|add:0 %}
         <i class="bi bi-star-fill text-warning"></i>
         {% else %}
         <i class="bi bi-star text-warning"></i>
         {% endif %}
         {% endfor %}
-        <span class="ms-1 text-primary">{{object.avg_rate}}/5</span>
+        <span class="ms-1 text-primary">{{product.avg_rate}}/5</span>
       </div>
       <!-- End Rating -->
 
       <!-- Heading -->
       <div class="mb-5">
-        <h1 class="h2">{{object.title}}</h1>
+        <h1 class="h2">{{product.title}}</h1>
         <p>
-          {{object.description}}
+          {{product.description}}
         </p>
       </div>
       <!-- End Heading -->
@@ -78,11 +78,11 @@
       <div class="mb-5">
         <span class="d-block mb-2">قیمت کل:</span>
         <div class="d-flex align-items-center">
-          {% if object.discount_pecent %}
-          <h3 class="mb-0">{{object.offer|intcomma}}</h3>
-          <span class="ms-2"><del>{{object.price|intcomma}}</del></span>
+          {% if product.discount_pecent %}
+          <h3 class="mb-0">{{product.offer|intcomma}}</h3>
+          <span class="ms-2"><del>{{product.price|intcomma}}</del></span>
           {% else %}
-          <h3 class="mb-0">{{object.price|intcomma}} تومان</h3>
+          <h3 class="mb-0">{{product.price|intcomma}} تومان</h3>
           {% endif %}
         </div>
       </div>
@@ -205,11 +205,11 @@
       <!-- End Accordion -->
 
       <div class="d-grid mb-4">
-        {% if object.stock %}
+        {% if product.stock %}
         <button
           type="button"
           class="btn btn-primary btntransition"
-          onclick="addProd(`{{object.id}}`)"
+          onclick="addProd(`{{product.id}}`)"
         >
           افزودن به سبد خرید
         </button>
@@ -249,7 +249,7 @@
         </div>
         <div class="flex-grow-1 ms-2">
           <span class="small me-1">نیاز به پشتیبانی دارید؟</span>
-          <a class="link small" href="#">ارسال تیکت</a>
+          <a class="link small" href="{% url 'website:contact' %}">ارسال تیکت</a>
         </div>
       </div>
       <!-- End Media -->
@@ -260,7 +260,7 @@
 </div>
 <!-- End Hero -->
 
-{% comment %} {% show_similar_products object %} {% endcomment %}
+{% comment %} {% show_similar_products product %} {% endcomment %}
 
 <!-- Review Section -->
 <div
@@ -277,14 +277,14 @@
             <div class="d-flex justify-content-center">
               <div class="d-flex align-items-center">
                 <div class="flex-shrink-0">
-                  <span class="display-4 text-white">{{object.avg_rate}}</span>
+                  <span class="display-4 text-white">{{product.avg_rate}}</span>
                 </div>
 
                 <div class="flex-grow-1 ms-3">
                   <!-- Rating -->
                   <div class="d-flex gap-1 mb-3">
                     {% for rate in '12345' %}
-                    {% if object.avg_rate >= rate|add:0 %}
+                    {% if product.avg_rate >= rate|add:0 %}
                     <i class="bi bi-star-fill text-warning"></i>
                     {% else %}
                     <i class="bi bi-star text-warning"></i>
@@ -292,7 +292,7 @@
                     {% endfor %}
                   </div>
                   <!-- End Rating -->
-                  <span class="text-white">{{reviews.count}} نظر</span>
+                  <span class="text-white">{reviews.count} نظر</span>
                 </div>
               </div>
             </div>
@@ -598,9 +598,9 @@
             </div>
 
             <div class="modal-body">
-                <form action="{% url 'review:submit-review' %}" method="post" id="review-form">
+                <form action="review:submit-review" method="post" id="review-form">
                     {% csrf_token %}
-                    <input hidden name="product" value="{{object.id}}">
+                    <input hidden name="product" value="{{product.id}}">
                     <div class="row">
                         <div class="mb-3">
                             <label class="form-label" for="rateModalInput">امتیاز</label>

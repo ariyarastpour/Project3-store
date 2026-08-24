@@ -1,6 +1,7 @@
 from django.shortcuts import render
-from django.views.generic import TemplateView,ListView
+from django.views.generic import TemplateView, ListView, DetailView
 from .models import *
+from django.db.models import Count, Q
 from django.core.exceptions import FieldError
 
 
@@ -73,5 +74,9 @@ class GridView(ListView):
         return context
 
 
-class DetailView(TemplateView):
+class DetailViewModel(DetailView):
+    model = Product
+    queryset = Product.objects.filter(status=True)
+    context_object_name = 'product'
     template_name = "shop/products-detail.html"
+    pk_url_kwarg = 'pk'
