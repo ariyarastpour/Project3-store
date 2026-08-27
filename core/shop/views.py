@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.views.generic import TemplateView, ListView, DetailView
 from .models import *
 from django.db.models import Count, Q
@@ -100,5 +100,23 @@ class DetailViewModel(DetailView):
             five_star=five_star
         )
 
+        total_reviews = reviews.count()
+        recommended = reviews.filter(rate__gte=4).count()
+        
+        if total_reviews > 0:
+            context['recommend_percent'] = round((recommended / total_reviews) * 100)
+        else:
+            context['recommend_percent'] = 0
+
         return context
     
+
+def CategoryView(request, slug):
+    category = get_object_or_404(Category, slug=slug)    
+    products = Product.objects.filter(status=1, category=category)
+    
+    context = {
+        'products': products,
+        'category': category
+    }
+    return render(request, 'shop/products-list.html', context)

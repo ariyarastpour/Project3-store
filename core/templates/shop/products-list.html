@@ -3,7 +3,7 @@
 {% load website_tags %}
 {% load humanize %}
 
-{% block title %}محصولات{% endblock  %}
+{% block title %}محصولات{% endblock %}
 
 {% block content %}
     <!-- Breadcrumb -->
@@ -20,12 +20,11 @@
             <nav aria-label="breadcrumb">
               <ol class="breadcrumb mb-0 ">
                 <li class="breadcrumb-item ps-2">
-                  <a href="{% url 'website:home' %}">خرید کنید</a>
+                  <a href="{% url 'website:home' %}">خانه</a>
                 </li>
                 <li class="breadcrumb-item">
                   <a href="{% url 'shop:list_grid' %}">محصولات</a>
                 </li>
-                <li class="breadcrumb-item active" aria-current="page">توری</li>
               </ol>
             </nav>
             <!-- End Breadcrumb -->
@@ -188,7 +187,7 @@
                   <div class="card-body">
                     <div class="mb-2">
                       {% for cat in product.category.all %}
-                      <a class="link-sm link-secondary" href="#">{{cat}}</a>
+                      <a class="link-sm link-secondary" href="{% url 'shop:category' cat.slug %}">{{cat}}</a>
                       {% if not forloop.last %}
                         ،
                       {% endif %}

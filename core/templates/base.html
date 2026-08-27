@@ -9,7 +9,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
   <!-- Title -->
-  <title>{% block title %}خانه{% endblock title %}</title>
+  <title>{% block title %}خانه{% endblock %}</title>
 
   <!-- Font -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
@@ -264,30 +264,6 @@
     });
     }
 
-      var sliderThumbs = new Swiper('.js-swiper-shop-product-thumb', {
-        slidesPerView: 3,
-        watchSlidesVisibility: true,
-        watchSlidesProgress: true,
-        history: false,
-      });
-
-      // Our team in About.html
-    var swiperTeam = new Swiper('.js-swiper-team', {
-        slidesPerView: 1,
-        spaceBetween: 20,
-        loop: false,
-        speed: 600,
-        
-        breakpoints: {
-            576: { slidesPerView: 2 },
-            992: { slidesPerView: 4 },
-        },
-
-        navigation: {
-            nextEl: '.js-swiper-team-button-next',
-            prevEl: '.js-swiper-team-button-prev',
-        },
-    });
     </script>
   
     {% block extera-js %} {% endblock extera-js %}

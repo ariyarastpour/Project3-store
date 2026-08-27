@@ -15,12 +15,12 @@ class Category(models.Model):
     
 
 class Product(models.Model):
-    user = models.ForeignKey(Profile,on_delete=models.PROTECT)
+    user = models.ForeignKey("accounts.Profile",on_delete=models.PROTECT)
     title = models.CharField(max_length=200)
     slug = models.SlugField(unique=True,allow_unicode=True)
-    image = models.ImageField()
+    image = models.ImageField(upload_to='img/products/')
     description = models.TextField()
-    category = models.ManyToManyField(Category)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, default=1)
     stock = models.PositiveIntegerField(default=0)
     status = models.BooleanField(default=False)
     price = models.DecimalField(decimal_places=0, max_digits=10)
@@ -64,7 +64,7 @@ class ProductGallery(models.Model):
 
 
 class WishList(models.Model):
-    user = models.ForeignKey(Profile, on_delete=models.PROTECT)
+    user = models.ForeignKey("accounts.user", on_delete=models.PROTECT)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
 
     def __str__(self):

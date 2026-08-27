@@ -23,6 +23,12 @@ def render_footer_menu():
         })
     
     return {'footer_data': footer_data}
+ 
+
+@register.inclusion_tag('includes/footer_socialmedia.html')
+def render_socialmedia():
+    socialmedias = SocialMedia.objects.filter(show_in_footer=True)
+    return {'socialmedias': socialmedias}
 
 
 #Index.html

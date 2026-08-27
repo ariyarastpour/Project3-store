@@ -8,5 +8,5 @@ urlpatterns = [
     path('products/list', views.ListViewModel.as_view(), name='list'),
     path("products/list/grid/", views.GridView.as_view(), name="list_grid"),
     path("product/<int:pk>/detail/", views.DetailViewModel.as_view(), name="detail"),
-    # path("category/<slug:slug>", views.CategoryView.as_view(), name="category"),
+    path("category/<slug:slug>", views.CategoryView, name="category"),
 ]
