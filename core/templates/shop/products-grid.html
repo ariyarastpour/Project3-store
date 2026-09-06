@@ -20,12 +20,11 @@
             <nav aria-label="breadcrumb">
               <ol class="breadcrumb mb-0 ">
                 <li class="breadcrumb-item ps-2">
-                  <a href="{% url 'shop:list' %}">خرید کنید</a>
+                  <a href="{% url 'website:home' %}">خانه</a>
                 </li>
                 <li class="breadcrumb-item">
                   <a href="{% url 'shop:list_grid' %}">محصولات</a>
                 </li>
-                <li class="breadcrumb-item active" aria-current="page">توری</li>
               </ol>
             </nav>
             <!-- End Breadcrumb -->
@@ -204,7 +203,7 @@
                   </div>
 
                   <h4 class="card-title">
-                    <a class="text-dark" href="shop:detail' slug=product.slug">{{product.title}}</a>
+                    <a class="text-dark" href="{% url 'shop:detail' product.id %}">{{product.title}}</a>
                   </h4>
                   {% if product.discount_percent %}
                   <p class="card-text text-dark">{{product.offer|intcomma}} <span class="text-body ms-1"><del>{{product.price|intcomma}} تومان</del></span></p>

@@ -15,6 +15,14 @@ DEBUG = config("DEBUG", cast=bool, default=True)
 
 ALLOWED_HOSTS = config('ALLOWED_HOSTS', cast=lambda v: [s.strip() for s in v.split(',')], default='*')
 
+RECAPTCHA_PUBLIC_KEY = '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI'
+RECAPTCHA_PRIVATE_KEY = '6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe'
+
+# ===== نادیده گرفتن خطا =====
+SILENCED_SYSTEM_CHECKS = [
+    'django_recaptcha.recaptcha_test_key_error',  # نادیده گرفتن خطای کلید تست
+]
+
 # Application definition
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -23,6 +31,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_recaptcha',
     'website',  
     'django.contrib.humanize',
     #'cart',    
@@ -30,7 +39,8 @@ INSTALLED_APPS = [
     #'order',  
     'review', 
     'shop',    
-    'accounts', 
+    'accounts',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
@@ -58,8 +68,10 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'django.template.context_processors.media',  # اضافه کنید
-                'django.template.context_processors.static', # اضافه کنید
+                'django.template.context_processors.media',
+                'django.template.context_processors.static',
+                'website.context_processors.site_settings',
+                'website.context_processors.loader_settings',
             ],
         },
     },
@@ -119,3 +131,4 @@ AUTH_USER_MODEL = 'accounts.User'
 
 #404 
 # DEBUG_PROPAGATE_EXCEPTIONS = True
+

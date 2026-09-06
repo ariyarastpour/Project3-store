@@ -9,10 +9,10 @@
       <!-- ستون ۱: لوگو و برند -->
       <div class="col-lg-3 mb-5">
         <div class="d-flex align-items-start flex-column h-100">
-          <a class="w-100 mb-3 mb-lg-auto" href="{% url 'website:home' %}" aria-label="Front">
-            <img class="brand" src="{% static 'svg/logos/logo.svg' %}" alt="Logo">
+          <a class="w-100 mb-3 mb-lg-auto" href="{% url 'website:home' %}" aria-label="{{site_settings.site_name}}">
+            <img class="brand" src="{{site_settings.logo.url}}" alt="Logo">
           </a>
-          <p class="text-muted small mb-0">&copy; Benyamin 2023 Front RTL</p>
+          <p class="text-muted small mb-0">&copy; {{site_settings.developer_name}} {{site_settings.copyright_start_year}} {{site_settings.site_name}} RTL</p>
         </div>
       </div>
       <!-- End Col -->
@@ -32,13 +32,10 @@
       <div class="col-sm-auto">
         <ul class="list-inline list-separator">
           <li class="list-inline-item">
-            <a class="link-sm link-secondary" href="/page-privacy.html">حریم خصوصی و خط مشی</a>
+            <a class="link-sm link-secondary" href="{% url 'website:privacy' %}">حفاظت و حریم خصوصی</a>
           </li>
           <li class="list-inline-item">
             <a class="link-sm link-secondary" href="/page-terms.html">مقررات و شرایط</a>
-          </li>
-          <li class="list-inline-item">
-            <a class="link-sm link-secondary" href="/#">مشاغل</a>
           </li>
         </ul>
       </div>

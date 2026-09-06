@@ -23,7 +23,7 @@
                   <a href="{% url 'website:home' %}">خانه</a>
                 </li>
                 <li class="breadcrumb-item">
-                  <a href="{% url 'shop:list_grid' %}">محصولات</a>
+                  <a href="{% url 'shop:list' %}">محصولات</a>
                 </li>
               </ol>
             </nav>
@@ -337,7 +337,7 @@
               <!-- End Input Card -->
             </form>
 
-            <p class="small">می توانید در هر زمانی اشتراک خود را لغو کنید <a href="#">سیاست حفظ حریم خصوصی</a> ما را بخوانید</p>
+            <p class="small">می توانید در هر زمانی اشتراک خود را لغو کنید <a href="{% url 'website:privacy' %}">سیاست حفظ حریم خصوصی</a> ما را بخوانید</p>
           </div>
         </div>
       </div>

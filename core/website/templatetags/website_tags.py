@@ -62,7 +62,7 @@ def render_brand_logos():
     }
 
 #About.html
-@register.inclusion_tag('includes/team_slider.html')
+@register.inclusion_tag('includes/team_grid.html')
 def render_team():
-    members = TeamMember.objects.filter(is_active=True).order_by('order')
+    members = TeamMember.objects.filter(is_active=True)
     return {'members': members}

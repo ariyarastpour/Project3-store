@@ -63,6 +63,7 @@
   --bs-dark-rgb: 33, 50, 91;
   --bs-white-rgb: 255, 255, 255;
   --bs-black-rgb: 0, 0, 0;
+  --bs-body-bg: #FFFFFF;
   --bs-body-color-rgb: 103, 119, 136;
   --bs-body-bg-rgb: 255, 255, 255;
   --bs-font-sans-serif: system-ui, -apple-system, "Segoe UI", Roboto,
@@ -80,7 +81,6 @@
   --bs-body-font-weight: 400;
   --bs-body-line-height: 1.5;
   --bs-body-color: #677788;
-  --bs-body-bg: #fff;
   --bs-border-width: 0.0625rem;
   --bs-border-style: solid;
   --bs-border-color: rgba(33, 50, 91, 0.1);
@@ -91,8 +91,6 @@
   --bs-border-radius-xl: 1rem;
   --bs-border-radius-2xl: 2rem;
   --bs-border-radius-pill: 50rem;
-  --bs-link-color: #377dff;
-  --bs-link-hover-color: #1366ff;
   --bs-code-color: #d63384;
   --bs-highlight-bg: #fdf4eb;
 }

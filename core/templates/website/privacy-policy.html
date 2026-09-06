@@ -1,0 +1,457 @@
+{% extends "base.html" %}
+{% load static %}
+{% load website_tags %}
+
+{% block title %}{{ privacy_setting.page_title|default:"سیاست حفظ حریم خصوصی" }} | {{ site_settings.site_name|default:"فروشگاه" }}{% endblock %}
+
+{% block extera-css %}
+<style>
+    .privacy-page {
+        font-family: {{ site_settings.font_family|default:"'Vazir', sans-serif" }};
+        color: #1a1a2e;
+    }
+
+    /* ===== هدر ===== */
+    .privacy-hero {
+        background: {{ site_settings.primary_color|default:"#377dff" }};
+        padding: 70px 0 60px;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+    .privacy-hero::after {
+        content: '';
+        position: absolute;
+        bottom: -2px;
+        left: 0;
+        right: 0;
+        height: 60px;
+        background: #fff;
+        border-radius: 0 0 50% 50% / 0 0 100% 100%;
+        transform: scaleX(1.5);
+    }
+    .privacy-hero h1 {
+        color: #fff;
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 10px;
+        position: relative;
+        z-index: 1;
+    }
+    .privacy-hero .subtitle {
+        color: rgba(255,255,255,0.85);
+        font-size: 1.1rem;
+        position: relative;
+        z-index: 1;
+    }
+    .privacy-hero .update-badge {
+        display: inline-block;
+        background: rgba(255,255,255,0.15);
+        backdrop-filter: blur(5px);
+        padding: 6px 20px;
+        border-radius: 30px;
+        color: #fff;
+        font-size: 0.85rem;
+        margin-top: 15px;
+        position: relative;
+        z-index: 1;
+        border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    /* ===== کانتینر ===== */
+    .privacy-body {
+        max-width: 860px;
+        margin: -30px auto 0;
+        padding: 0 20px 60px;
+        position: relative;
+        z-index: 2;
+    }
+
+    /* ===== کارت‌ها ===== */
+    .privacy-card {
+        background: #fff;
+        border-radius: 16px;
+        padding: 32px 35px;
+        margin-bottom: 24px;
+        box-shadow: 0 2px 20px rgba(0,0,0,0.04);
+        border: 1px solid #f0f0f5;
+        transition: box-shadow 0.3s;
+        animation: fadeInUp 0.6s ease forwards;
+    }
+    .privacy-card:hover {
+        box-shadow: 0 8px 40px rgba(0,0,0,0.06);
+    }
+    
+    @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    .privacy-card:nth-child(1) { animation-delay: 0.05s; }
+    .privacy-card:nth-child(2) { animation-delay: 0.10s; }
+    .privacy-card:nth-child(3) { animation-delay: 0.15s; }
+    .privacy-card:nth-child(4) { animation-delay: 0.20s; }
+    .privacy-card:nth-child(5) { animation-delay: 0.25s; }
+    .privacy-card:nth-child(6) { animation-delay: 0.30s; }
+    .privacy-card:nth-child(7) { animation-delay: 0.35s; }
+    .privacy-card:nth-child(8) { animation-delay: 0.40s; }
+    .privacy-card:nth-child(9) { animation-delay: 0.45s; }
+    .privacy-card:nth-child(10) { animation-delay: 0.50s; }
+
+    .privacy-card .card-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+        background: {{ site_settings.primary_color|default:"#377dff" }}11;
+        color: {{ site_settings.primary_color|default:"#377dff" }};
+        font-size: 1.2rem;
+        margin-left: 12px;
+        flex-shrink: 0;
+    }
+    .privacy-card h3 {
+        display: flex;
+        align-items: center;
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: #1a1a2e;
+        margin-bottom: 8px;
+        padding-bottom: 14px;
+        border-bottom: 2px solid #f5f5fa;
+    }
+    .privacy-card .card-desc {
+        color: #888;
+        font-size: 0.9rem;
+        margin-bottom: 18px;
+        margin-top: -6px;
+    }
+    .privacy-card p {
+        color: #4a4a5a;
+        line-height: 1.9;
+        margin-bottom: 0;
+    }
+
+    /* ===== لیست آیتم‌ها ===== */
+    .privacy-card ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+    .privacy-card ul li {
+        padding: 12px 0;
+        border-bottom: 1px solid #f5f5fa;
+        color: #4a4a5a;
+    }
+    .privacy-card ul li:last-child {
+        border-bottom: none;
+    }
+    .privacy-card ul li .li-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: wrap;
+    }
+    .privacy-card ul li .li-icon {
+        width: 28px;
+        height: 28px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 8px;
+        background: #f5f5fa;
+        font-size: 0.85rem;
+        color: {{ site_settings.primary_color|default:"#377dff" }};
+        flex-shrink: 0;
+    }
+    .privacy-card ul li .li-title {
+        font-weight: 600;
+        color: #1a1a2e;
+    }
+    .privacy-card ul li .li-badge {
+        margin-right: auto;
+        font-size: 0.7rem;
+        padding: 3px 14px;
+        border-radius: 30px;
+        background: #f0f0f5;
+        color: #888;
+        flex-shrink: 0;
+    }
+    .privacy-card ul li .li-badge.active {
+        background: #e3f5ee;
+        color: #00b894;
+    }
+    .privacy-card ul li .li-badge.inactive {
+        background: #fde8ef;
+        color: #e74c6f;
+    }
+    .privacy-card ul li .li-badge.limited {
+        background: #fef6e6;
+        color: #f39c12;
+    }
+    .privacy-card ul li .li-badge.warning {
+        background: #fef6e6;
+        color: #f39c12;
+    }
+    .privacy-card ul li .li-badge.info {
+        background: #e8f0fe;
+        color: #377dff;
+    }
+    .privacy-card ul li .li-badge.success {
+        background: #e3f5ee;
+        color: #00b894;
+    }
+    .privacy-card ul li .li-badge.danger {
+        background: #fde8ef;
+        color: #e74c6f;
+    }
+    .privacy-card ul li .li-desc {
+        font-size: 0.85rem;
+        color: #999;
+        margin-top: 4px;
+        padding-right: 40px;
+        line-height: 1.7;
+    }
+
+    /* ===== کوکی ===== */
+    .cookie-status {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 18px;
+        border-radius: 30px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        margin-bottom: 12px;
+    }
+    .cookie-status.on {
+        background: #e3f5ee;
+        color: #00b894;
+    }
+    .cookie-status.off {
+        background: #fde8ef;
+        color: #e74c6f;
+    }
+
+    /* ===== شبکه امنیت ===== */
+    .security-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+        gap: 12px;
+        margin-top: 6px;
+    }
+    .security-grid .sec-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 12px 16px;
+        background: #f8f8fc;
+        border-radius: 12px;
+        font-size: 0.9rem;
+        color: #1a1a2e;
+    }
+    .security-grid .sec-item i {
+        color: {{ site_settings.primary_color|default:"#377dff" }};
+        font-size: 1rem;
+    }
+    .security-grid .sec-item .sec-desc {
+        font-size: 0.7rem;
+        color: #999;
+        font-weight: 400;
+    }
+
+    /* ===== حقوق کاربران ===== */
+    .rights-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        gap: 12px;
+    }
+    .rights-grid .right-item {
+        text-align: center;
+        padding: 18px 12px;
+        background: #f8f8fc;
+        border-radius: 12px;
+        font-size: 0.85rem;
+        font-weight: 500;
+        color: #1a1a2e;
+    }
+    .rights-grid .right-item i {
+        display: block;
+        font-size: 1.4rem;
+        margin-bottom: 6px;
+        color: {{ site_settings.primary_color|default:"#377dff" }};
+    }
+    .rights-grid .right-item .right-desc {
+        font-size: 0.7rem;
+        color: #999;
+        font-weight: 400;
+        margin-top: 4px;
+    }
+
+    /* ===== تماس ===== */
+    .contact-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+    }
+    .contact-grid .contact-item {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 14px 18px;
+        background: #f8f8fc;
+        border-radius: 12px;
+        transition: background 0.2s;
+    }
+    .contact-grid .contact-item:hover {
+        background: #f0f0fa;
+    }
+    .contact-grid .contact-item i {
+        width: 38px;
+        height: 38px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 10px;
+        background: {{ site_settings.primary_color|default:"#377dff" }}15;
+        color: {{ site_settings.primary_color|default:"#377dff" }};
+        font-size: 1rem;
+        flex-shrink: 0;
+    }
+    .contact-grid .contact-item .label {
+        font-size: 0.75rem;
+        color: #999;
+        display: block;
+    }
+    .contact-grid .contact-item .value {
+        font-weight: 600;
+        color: #1a1a2e;
+    }
+    .contact-grid .contact-item .value a {
+        color: inherit;
+        text-decoration: none;
+    }
+    .contact-grid .contact-item .value a:hover {
+        color: {{ site_settings.primary_color|default:"#377dff" }};
+    }
+
+    /* ===== دکمه نقشه ===== */
+    .map-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 28px;
+        background: {{ site_settings.primary_color|default:"#377dff" }};
+        color: #fff;
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        text-decoration: none;
+        transition: all 0.3s;
+        border: none;
+        margin-top: 4px;
+    }
+    .map-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 30px {{ site_settings.primary_color|default:"#377dff" }}40;
+        color: #fff;
+    }
+
+    /* ===== ریسپانسیو ===== */
+    @media (max-width: 640px) {
+        .privacy-hero { padding: 50px 0 40px; }
+        .privacy-hero h1 { font-size: 1.8rem; }
+        .privacy-body { padding: 0 14px 40px; margin-top: -20px; }
+        .privacy-card { padding: 22px 18px; }
+        .privacy-card h3 { font-size: 1.05rem; }
+        .contact-grid { grid-template-columns: 1fr; }
+        .security-grid { grid-template-columns: 1fr 1fr; }
+        .rights-grid { grid-template-columns: 1fr 1fr; }
+        .privacy-card ul li .li-desc { padding-right: 0; }
+    }
+    @media (max-width: 400px) {
+        .security-grid { grid-template-columns: 1fr; }
+        .rights-grid { grid-template-columns: 1fr; }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- ===== هدر ===== -->
+<section class="privacy-hero">
+    <div class="container">
+        <h1>{{ privacy_setting.page_title|default:"سیاست حفظ حریم خصوصی" }}</h1>
+        <p class="subtitle">{{ privacy_setting.page_subtitle|default:site_settings.site_name|default:"فروشگاه" }}</p>
+        <span class="update-badge">
+            <i class="far fa-calendar-alt"></i>
+            آخرین به‌روزرسانی: {{ privacy_setting.last_update|date:"j F Y" }}
+        </span>
+    </div>
+</section>
+
+<!-- ===== محتوا ===== -->
+<div class="privacy-body">
+
+    <!-- ===== سکشن‌های داینامیک ===== -->
+    {% for section in privacy_sections %}
+        {% if section.is_active %}
+            <div class="privacy-card" id="section-{{ section.id }}">
+                <h3>
+                    <span class="card-icon">
+                        {% if section.icon %}
+                            <i class="fas {{ section.icon }}"></i>
+                        {% else %}
+                            <i class="fas fa-cube"></i>
+                        {% endif %}
+                    </span>
+                    {{ section.title }}
+                </h3>
+                
+                {% if section.description %}
+                    <p class="card-desc">{{ section.description }}</p>
+                {% endif %}
+                
+                {% with items=section.items_list.all %}
+                    {% if items %}
+                        <ul>
+                            {% for item in items %}
+                                <li>
+                                    <div class="li-header">
+                                        {% if item.icon %}
+                                            <span class="li-icon"><i class="fas {{ item.icon }}"></i></span>
+                                        {% else %}
+                                            <span class="li-icon"><i class="fas fa-circle" style="font-size: 0.5rem;"></i></span>
+                                        {% endif %}
+                                        <span class="li-title">{{ item.title }}</span>
+                                        {% if item.badge_text %}
+                                            <span class="li-badge {{ item.badge_style|default:'active' }}">{{ item.badge_text }}</span>
+                                        {% endif %}
+                                    </div>
+                                    {% if item.description %}
+                                        <div class="li-desc">{{ item.description }}</div>
+                                    {% endif %}
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                {% endwith %}
+            </div>
+        {% endif %}
+    {% endfor %}
+
+
+    <!-- ===== تغییرات سیاست ===== -->
+    <div class="privacy-card" style="text-align:center; background:#f8f8fc; border-color:#eee;">
+        <p style="color:#888; font-size:0.9rem;">
+            <i class="fas fa-history" style="color:{{ site_settings.primary_color|default:'#377dff' }};"></i>
+            آخرین به‌روزرسانی: <strong>{{ privacy_setting.last_update|date:"j F Y" }}</strong>
+        </p>
+        <p style="font-size:0.85rem; color:#aaa; margin-top:4px;">
+            این سیاست ممکن است به‌روزرسانی شود. تغییرات مهم از طریق ایمیل یا اعلان در سایت به شما اطلاع‌رسانی خواهد شد.
+        </p>
+    </div>
+
+</div>
+
+{% endblock content %}

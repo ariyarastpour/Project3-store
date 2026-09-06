@@ -9,7 +9,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
   <!-- Title -->
-  <title>{% block title %}خانه{% endblock %}</title>
+  <title>{% block title %} {{ site_settings.site_name }} {% endblock %}</title>
 
   <!-- Font -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
@@ -23,10 +23,54 @@
 
   <!-- CSS Toastify -->
   <link rel="stylesheet" href="{% static 'vendor/toastify/toastify.css' %}">
+
+ 
+  <style>
+    body {
+        background-color: {{ site_settings.background_color|default:'#FFFFFF' }} !important;
+    }
+    
+    /* فیلدهای ورودی */
+    .form-control,
+    .form-select,
+    input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]):not([type="button"]),
+    textarea {
+        background-color: {{ site_settings.input_color|default:'#FFFFFF' }} !important;
+    }
+    
+    /* فونت سفارشی */
+    {% if site_settings.use_custom_font and site_settings.custom_font_file %}
+    @font-face {
+        font-family: '{{ site_settings.custom_font_name }}';
+        src: url('{{ site_settings.custom_font_file.url }}') format('woff2');
+        font-display: swap;
+    }
+    body, p, h1, h2, h3, h4, h5, h6,
+    .nav-link, .dropdown-item, .btn,
+    .form-control, .form-select, input, textarea,
+    .card, .modal, .offcanvas, .popover, .tooltip {
+        font-family: '{{ site_settings.custom_font_name }}', '{{ site_settings.font_family|default:"sans-serif" }}', sans-serif !important;
+    }
+    {% else %}
+    body, p, h1, h2, h3, h4, h5, h6,
+    .nav-link, .dropdown-item, .btn,
+    .form-control, .form-select, input, textarea,
+    .card, .modal, .offcanvas, .popover, .tooltip {
+        font-family: '{{ site_settings.font_family|default:"sans-serif" }}', sans-serif !important;
+    }
+    {% endif %}
+  </style>
+  <!-- ============================================ -->
+
   {% block extera-css %} {% endblock extera-css %}
 </head>
 
 <body>
+
+    <!-- ========== PRELOADER ========== -->
+    {% include "preloader/preloader.html" %}
+    <!-- ========== END PRELOADER  ========== -->
+
     <!-- ========== HEADER ========== -->
     {% include "includes/header.html" %}
     <!-- ========== END HEADER ========== -->
@@ -155,7 +199,7 @@
           prevEl: '.js-swiper-shop-product-button-prev',
         },
         thumbs: {
-          swiper: productThumbs  // ✅ حالا درست است!
+          swiper: productThumbs
         }
       });
 

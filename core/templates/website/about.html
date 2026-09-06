@@ -2,7 +2,7 @@
 {% load static %}
 {% load website_tags %}
 
-{% block title %}درباره ما{% endblock %}
+{% block title %}{{ aboutsetting.about_title|default:"درباره ما" }} | {{ site_settings.site_name|default:"فروشگاه" }}{% endblock %}
 
 {% block extera-css %}{% endblock %}
 
@@ -12,8 +12,8 @@
       <div class="w-lg-75 text-center mx-lg-auto">
         <!-- Heading -->
         <div class="mb-5 mb-md-10">
-          <h1 class="display-4">درباره ما</h1>
-          <p class="lead">Front یک شرکت وب است که وب سایت می سازد. کسب‌وکارها در هر اندازه‌ای - از استارت‌آپ‌های جدید گرفته تا شرکت‌های عمومی - از موضوع ما برای ایجاد و مدیریت آنلاین کسب‌وکارشان استفاده می‌کنند.</p>
+          <h1 class="display-4">{{site_settings.about_title}}</h1>
+          <p class="lead">{{site_settings.about_content}}</p>
         </div>
         <!-- End Heading -->
       </div>

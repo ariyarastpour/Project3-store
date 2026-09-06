@@ -15,12 +15,12 @@ class Category(models.Model):
     
 
 class Product(models.Model):
-    user = models.ForeignKey("accounts.Profile",on_delete=models.PROTECT)
+    user = models.ForeignKey("accounts.Profile",on_delete=models.CASCADE)
     title = models.CharField(max_length=200)
     slug = models.SlugField(unique=True,allow_unicode=True)
     image = models.ImageField(upload_to='img/products/')
     description = models.TextField()
-    category = models.ForeignKey(Category, on_delete=models.CASCADE, default=1)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE)
     stock = models.PositiveIntegerField(default=0)
     status = models.BooleanField(default=False)
     price = models.DecimalField(decimal_places=0, max_digits=10)

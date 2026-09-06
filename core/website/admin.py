@@ -1,4 +1,4 @@
-# your_app/admin.py
+# website/admin.py
 
 from django.contrib import admin
 from django import forms
@@ -6,19 +6,32 @@ from django.utils.html import format_html
 from django.core.exceptions import ValidationError
 from django.utils.timezone import now
 from .models import *
-from django.utils.safestring import mark_safe
 
+
+# ============================================================
+# ===== کلاس پایه برای تنظیمات Singleton =====================
+# ============================================================
+
+class BaseSingletonAdmin(admin.ModelAdmin):
+    """فقط یک رکورد قابل ایجاد است و نمی‌توان حذف کرد"""
+    
+    def has_add_permission(self, request):
+        if self.model.objects.exists():
+            return False
+        return super().has_add_permission(request)
+    
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+
+# ============================================================
+# ===== ۱. ادمین SocialMedia =================================
+# ============================================================
 
 class SocialMediaAdminForm(forms.ModelForm):
     class Meta:
         model = SocialMedia
         fields = '__all__'
-        widgets = {
-            'url': forms.URLInput(attrs={'style': 'width: 400px;'}),
-            'icon_class': forms.TextInput(attrs={'style': 'width: 200px;', 'placeholder': 'bi-facebook'}),
-            'custom_icon_html': forms.Textarea(attrs={'rows': 2, 'style': 'width: 400px;'}),
-            'custom_name': forms.TextInput(attrs={'style': 'width: 200px;'}),
-        }
     
     def clean(self):
         cleaned_data = super().clean()
@@ -39,142 +52,110 @@ class SocialMediaAdminForm(forms.ModelForm):
 @admin.register(SocialMedia)
 class SocialMediaAdmin(admin.ModelAdmin):
     form = SocialMediaAdminForm
-    
     list_display = ('get_display_name', 'url', 'is_active', 'order')
     list_editable = ('is_active', 'order', 'url')
-    list_filter = ('is_active', 'icon_style')
     search_fields = ('name', 'custom_name', 'url')
-    
-    fieldsets = (
-        ('اطلاعات شبکه اجتماعی', {
-            'fields': ('name', 'custom_name', 'url')
-        }),
-        ('تنظیمات آیکون', {
-            'fields': ('icon', 'icon_style', 'icon_class', 'custom_icon_html', 'show_icon_preview'),
-            'description': '''
-                <div style="background: #f8f9fa; padding: 10px; border-radius: 5px; margin: 5px 0;">
-                    <strong>راهنمای آیکون‌ها:</strong><br>
-                    • <strong>تصویر</strong>: می‌توانید تصویر آپلود کنید<br>
-                    • <strong>Bootstrap Icons</strong>: bi-facebook, bi-instagram, bi-twitter<br>
-                    • <strong>Font Awesome</strong>: fab fa-facebook, fab fa-instagram<br>
-                    • <strong>سایر</strong>: کد HTML دلخواه خود را وارد کنید
-                </div>
-            '''
-        }),
-        ('تنظیمات نمایش', {
-            'fields': ('order', 'open_in_new_tab', 'is_active', 'show_in_footer')
-        }),
-        ('اطلاعات مدیریتی', {
-            'fields': ('created_at', 'updated_at'),
-            'classes': ('collapse',)
-        }),
-    )
-    
-    readonly_fields = ('created_at', 'updated_at', 'show_icon_preview')
-    
-
-    def show_icon_preview(self, obj):
-        if obj.icon:
-            return format_html(
-                '<img src="{}" style="width: 40px; height: 40px; object-fit: contain; border: 1px solid #ddd; border-radius: 4px; padding: 5px;" />',
-                obj.icon.url
-            )
-        icon_html = obj.get_icon_html()
-        if icon_html:
-            return mark_safe(icon_html)
-        return mark_safe('<span style="color: #999;">—</span>')
-    
-    show_icon_preview.short_description = "پیش‌نمایش آیکون"
     
     def get_display_name(self, obj):
         return obj.get_display_name()
     get_display_name.short_description = "نام"
-    
-    actions = ['make_active', 'make_inactive']
-    
-    def make_active(self, request, queryset):
-        updated = queryset.update(is_active=True)
-        self.message_user(request, f'{updated} شبکه اجتماعی فعال شدند.')
-    make_active.short_description = "فعال کردن شبکه‌های اجتماعی انتخاب شده"
-    
-    def make_inactive(self, request, queryset):
-        updated = queryset.update(is_active=False)
-        self.message_user(request, f'{updated} شبکه اجتماعی غیرفعال شدند.')
-    make_inactive.short_description = "غیرفعال کردن شبکه‌های اجتماعی انتخاب شده"
 
 
 # ============================================================
-# =================== ۲. ادمین SiteSettings ===================
+# ===== ۲. ادمین SiteSetting =================================
 # ============================================================
 
-@admin.register(SiteSettings)
-class SiteSettingsAdmin(admin.ModelAdmin):
-    # نمایش در لیست
-    list_display = ('site_name', 'show_logo', 'phone', 'email', 'primary_color_preview')
-    search_fields = ('site_name', 'phone', 'email', 'address')
+@admin.register(SiteSetting)
+class SiteSettingAdmin(BaseSingletonAdmin):
+    list_display = ('site_name', 'show_logo', 'primary_color_preview')
+    search_fields = ('site_name',)
     
-    # گروه‌بندی فیلدها
-    fieldsets = (
-        ('اطلاعات پایه', {
-            'fields': ('site_name', 'logo', 'favicon')
-        }),
-        ('طراحی و ظاهر', {
-            'fields': ('primary_color', 'background_color', 'input_color', 
-                      'font_family', 'custom_font_file', 'custom_font_name', 'use_custom_font')
-        }),
-        ('کپی‌رایت و توسعه‌دهنده', {
-            'fields': ('copyright_start_year', 'developer_name', 'developer_url')
-        }),
-        ('اطلاعات تماس', {
-            'fields': ('phone', 'email', 'address', 'address_map')
-        }),
-        ('محتویات صفحات', {
-            'fields': ('contact_content', 'privacy_content', 'About_content')
-        }),
-    )
-    
-
     def show_logo(self, obj):
         if obj.logo:
-            return format_html('<img src="{}" style="width: 50px; height: 50px; object-fit: contain;" />', obj.logo.url)
+            return format_html('<img src="{}" style="width: 50px; height: 50px;" />', obj.logo.url)
         return "—"
     show_logo.short_description = "لوگو"
     
     def primary_color_preview(self, obj):
         return format_html(
-            '<div style="width: 30px; height: 30px; background-color: {}; border-radius: 4px; border: 1px solid #ddd;"></div>',
+            '<div style="width:30px; height:30px; background:{}; border-radius:4px;"></div>',
             obj.primary_color
         )
     primary_color_preview.short_description = "رنگ اصلی"
-    
-    def has_add_permission(self, request):
-        if SiteSettings.objects.exists():
-            return False
-        return True
 
 
 # ============================================================
-# =================== ۳. ادمین HeaderMenuItem ===================
+# ===== ۳. ادمین AboutSetting ================================
+# ============================================================
+
+@admin.register(AboutSetting)
+class AboutSettingAdmin(BaseSingletonAdmin):
+    list_display = ('about_title',)
+    search_fields = ('about_title', 'about_content')
+
+
+# ============================================================
+# ===== ۴. ادمین ContactSetting ==============================
+# ============================================================
+
+@admin.register(ContactSetting)
+class ContactSettingAdmin(BaseSingletonAdmin):
+    list_display = ('phone', 'email', 'address_short')
+    search_fields = ('phone', 'email', 'address', 'contact_title')
+    
+    def address_short(self, obj):
+        if obj.address:
+            return obj.address[:40] + '...' if len(obj.address) > 40 else obj.address
+        return "—"
+    address_short.short_description = "آدرس"
+
+
+# ============================================================
+# ===== ۵. ادمین PrivacySetting ==============================
+# ============================================================
+
+@admin.register(PrivacySetting)
+class PrivacySettingAdmin(BaseSingletonAdmin):
+    list_display = ('page_title', 'last_update')
+    search_fields = ('page_title', 'introduction_text')
+    
+    fieldsets = (
+        ('اطلاعات عمومی صفحه', {
+            'fields': ('page_title', 'page_subtitle', 'introduction_text')
+        }),
+    )
+
+
+# ============================================================
+# ===== ۶. ادمین PrivacySection ==============================
+# ============================================================
+
+@admin.register(PrivacySection)
+class PrivacySectionAdmin(admin.ModelAdmin):
+    list_display = ('title', 'section_type', 'is_active', 'order')
+    list_editable = ('is_active', 'order')
+    list_filter = ('section_type', 'is_active')
+    search_fields = ('title', 'description')
+    
+    fieldsets = (
+        ('اطلاعات اصلی', {
+            'fields': ('section_type', 'title', 'icon', 'is_active', 'order')
+        }),
+        ('توضیحات', {
+            'fields': ('description',),
+        }),
+    )
+
+
+# ============================================================
+# ===== ۷. ادمین HeaderMenuItem ==============================
 # ============================================================
 
 @admin.register(HeaderMenuItem)
 class HeaderMenuItemAdmin(admin.ModelAdmin):
     list_display = ('title', 'url', 'is_active', 'order')
     list_editable = ('is_active', 'order', 'url')
-    list_filter = ('is_active',)
     search_fields = ('title', 'url')
-    
-    fieldsets = (
-        ('اطلاعات لینک', {
-            'fields': ('title', 'url', 'order', 'is_active')
-        }),
-        ('اطلاعات مدیریتی', {
-            'fields': ('created_date', 'updated_date', 'published_date'),
-            'classes': ('collapse',)
-        }),
-    )
-    
-    readonly_fields = ('created_date', 'updated_date')
     
     def save_model(self, request, obj, form, change):
         if not obj.published_date:
@@ -183,38 +164,21 @@ class HeaderMenuItemAdmin(admin.ModelAdmin):
 
 
 # ============================================================
-# =================== ۴. ادمین Footer ===================
+# ===== ۸. ادمین Footer ======================================
 # ============================================================
 
 class FooterLinkInline(admin.TabularInline):
     model = FooterLink
     extra = 1
     fields = ('title', 'url', 'order', 'is_active')
-    ordering = ('order',)
 
 
 @admin.register(FooterColumn)
 class FooterColumnAdmin(admin.ModelAdmin):
     inlines = [FooterLinkInline]
-    list_display = ('title', 'link_count', 'is_active', 'order')
+    list_display = ('title', 'is_active', 'order')
     list_editable = ('is_active', 'order')
     search_fields = ('title',)
-    
-    fieldsets = (
-        ('اطلاعات ستون', {
-            'fields': ('title', 'order', 'is_active')
-        }),
-        ('اطلاعات مدیریتی', {
-            'fields': ('created_date', 'updated_date', 'published_date'),
-            'classes': ('collapse',)
-        }),
-    )
-    
-    readonly_fields = ('created_date', 'updated_date')
-    
-    def link_count(self, obj):
-        return obj.links.filter(is_active=True).count()
-    link_count.short_description = "تعداد لینک‌ها"
     
     def save_model(self, request, obj, form, change):
         if not obj.published_date:
@@ -226,20 +190,8 @@ class FooterColumnAdmin(admin.ModelAdmin):
 class FooterLinkAdmin(admin.ModelAdmin):
     list_display = ('title', 'column', 'url', 'is_active', 'order')
     list_editable = ('is_active', 'order', 'url')
-    list_filter = ('is_active', 'column')
+    list_filter = ('column', 'is_active')
     search_fields = ('title', 'url')
-    
-    fieldsets = (
-        ('اطلاعات لینک', {
-            'fields': ('column', 'title', 'url', 'order', 'is_active')
-        }),
-        ('اطلاعات مدیریتی', {
-            'fields': ('created_date', 'updated_date', 'published_date'),
-            'classes': ('collapse',)
-        }),
-    )
-    
-    readonly_fields = ('created_date', 'updated_date')
     
     def save_model(self, request, obj, form, change):
         if not obj.published_date:
@@ -248,7 +200,7 @@ class FooterLinkAdmin(admin.ModelAdmin):
 
 
 # ============================================================
-# =================== ۵. ادمین Heroslider ===================
+# ===== ۹. ادمین Heroslider ==================================
 # ============================================================
 
 class HeroBottomIconInline(admin.TabularInline):
@@ -260,28 +212,10 @@ class HeroBottomIconInline(admin.TabularInline):
 @admin.register(Heroslider)
 class HerosliderAdmin(admin.ModelAdmin):
     inlines = [HeroBottomIconInline]
-    list_display = ('title', 'show_image', 'status', 'created_date')
+    list_display = ('title', 'status', 'created_date')
     list_editable = ('status',)
-    list_filter = ('status', 'created_date')
+    list_filter = ('status',)
     search_fields = ('title', 'description')
-    
-    fieldsets = (
-        ('اطلاعات اسلایدر', {
-            'fields': ('title', 'image', 'description', 'status')
-        }),
-        ('اطلاعات مدیریتی', {
-            'fields': ('created_date', 'updated_date', 'published_date'),
-            'classes': ('collapse',)
-        }),
-    )
-    
-    readonly_fields = ('created_date', 'updated_date', 'show_image')
-    
-    def show_image(self, obj):
-        if obj.image:
-            return format_html('<img src="{}" style="width: 150px; height: auto;" />', obj.image.url)
-        return "—"
-    show_image.short_description = "پیش‌نمایش"
     
     def save_model(self, request, obj, form, change):
         if not obj.published_date:
@@ -291,45 +225,20 @@ class HerosliderAdmin(admin.ModelAdmin):
 
 @admin.register(HeroBottomIcon)
 class HeroBottomIconAdmin(admin.ModelAdmin):
-    list_display = ('show_icon', 'title', 'heroslider', 'order')
+    list_display = ('title', 'heroslider', 'order')
     list_editable = ('order',)
     list_filter = ('heroslider',)
-    
-    def show_icon(self, obj):
-        if obj.image:
-            return format_html('<img src="{}" style="width: 40px; height: 40px;" />', obj.image.url)
-        return "—"
-    show_icon.short_description = "آیکون"
 
 
 # ============================================================
-# =================== ۶. ادمین StoreFeature ===================
+# ===== ۱۰. ادمین StoreFeature ===============================
 # ============================================================
 
 @admin.register(StoreFeature)
 class StoreFeatureAdmin(admin.ModelAdmin):
-    list_display = ('title', 'show_icon', 'status', 'order')
+    list_display = ('title', 'status', 'order')
     list_editable = ('status', 'order')
-    list_filter = ('status',)
     search_fields = ('title', 'description')
-    
-    fieldsets = (
-        ('اطلاعات ویژگی', {
-            'fields': ('icon', 'title', 'description', 'status', 'order')
-        }),
-        ('اطلاعات مدیریتی', {
-            'fields': ('created_date', 'updated_date', 'published_date'),
-            'classes': ('collapse',)
-        }),
-    )
-    
-    readonly_fields = ('created_date', 'updated_date', 'show_icon')
-    
-    def show_icon(self, obj):
-        if obj.icon:
-            return format_html('<img src="{}" style="width: 40px; height: 40px;" />', obj.icon.url)
-        return "—"
-    show_icon.short_description = "آیکون"
     
     def save_model(self, request, obj, form, change):
         if not obj.published_date:
@@ -338,33 +247,14 @@ class StoreFeatureAdmin(admin.ModelAdmin):
 
 
 # ============================================================
-# =================== ۷. ادمین BrandLogo ===================
+# ===== ۱۱. ادمین BrandLogo ==================================
 # ============================================================
 
 @admin.register(BrandLogo)
 class BrandLogoAdmin(admin.ModelAdmin):
-    list_display = ('name', 'show_icon', 'status', 'order')
+    list_display = ('name', 'status', 'order')
     list_editable = ('status', 'order')
-    list_filter = ('status',)
     search_fields = ('name',)
-    
-    fieldsets = (
-        ('اطلاعات برند', {
-            'fields': ('name', 'icon', 'status', 'order')
-        }),
-        ('اطلاعات مدیریتی', {
-            'fields': ('created_date', 'updated_date', 'published_date'),
-            'classes': ('collapse',)
-        }),
-    )
-    
-    readonly_fields = ('created_date', 'updated_date', 'show_icon')
-    
-    def show_icon(self, obj):
-        if obj.icon:
-            return format_html('<img src="{}" style="width: 40px; height: 40px;" />', obj.icon.url)
-        return "—"
-    show_icon.short_description = "آیکون"
     
     def save_model(self, request, obj, form, change):
         if not obj.published_date:
@@ -373,33 +263,15 @@ class BrandLogoAdmin(admin.ModelAdmin):
 
 
 # ============================================================
-# =================== ۸. ادمین TeamMember ===================
+# ===== ۱۲. ادمین TeamMember ================================
 # ============================================================
 
 @admin.register(TeamMember)
 class TeamMemberAdmin(admin.ModelAdmin):
-    list_display = ('name', 'show_image', 'role', 'is_active', 'order')
+    list_display = ('name', 'role', 'is_active', 'order')
     list_editable = ('is_active', 'order')
     list_filter = ('is_active', 'role')
     search_fields = ('name', 'role', 'bio')
-    
-    fieldsets = (
-        ('اطلاعات عضو تیم', {
-            'fields': ('name', 'role', 'bio', 'image', 'order', 'is_active')
-        }),
-        ('اطلاعات مدیریتی', {
-            'fields': ('created_date', 'updated_date', 'published_date'),
-            'classes': ('collapse',)
-        }),
-    )
-    
-    readonly_fields = ('created_date', 'updated_date', 'show_image')
-    
-    def show_image(self, obj):
-        if obj.image:
-            return format_html('<img src="{}" style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover;" />', obj.image.url)
-        return "—"
-    show_image.short_description = "تصویر"
     
     def save_model(self, request, obj, form, change):
         if not obj.published_date:
@@ -408,25 +280,14 @@ class TeamMemberAdmin(admin.ModelAdmin):
 
 
 # ============================================================
-# =================== ۹. ادمین ContactMessage ===================
+# ===== ۱۳. ادمین ContactMessage =============================
 # ============================================================
 
 @admin.register(ContactMessage)
 class ContactMessageAdmin(admin.ModelAdmin):
-    list_display = ('full_name', 'email', 'phone_number', 'created_date', 'short_message')
+    list_display = ('full_name', 'email', 'created_date', 'short_message')
     list_filter = ('created_date',)
-    search_fields = ('name', 'last_name', 'email', 'phone_number', 'description')
-    date_hierarchy = 'created_date'
-    
-    fieldsets = (
-        ('اطلاعات شخصی', {
-            'fields': ('name', 'last_name', 'email', 'phone_number')
-        }),
-        ('متن پیام', {
-            'fields': ('description',)
-        }),
-    )
-    
+    search_fields = ('name', 'last_name', 'email', 'description')
     readonly_fields = ('name', 'last_name', 'email', 'phone_number', 'description', 'created_date')
     
     def full_name(self, obj):
@@ -434,13 +295,51 @@ class ContactMessageAdmin(admin.ModelAdmin):
     full_name.short_description = "نام کامل"
     
     def short_message(self, obj):
-        return obj.description[:50] + '...' if len(obj.description) > 50 else obj.description
-    short_message.short_description = "متن پیام"
+        return obj.description[:40] + '...' if len(obj.description) > 40 else obj.description
+    short_message.short_description = "پیام"
     
     def has_add_permission(self, request):
-        return False  # کاربران نمیتوانند از ادمین پیام اضافه کنند
+        return False
+    
 
+# ============================================================
+# ===== 14. ادمین Preloader =============================
+# ============================================================
 
-# admin.site.site_header = "پنل مدیریت فروشگاه"
-# admin.site.site_title = "فروشگاه من"
-# admin.site.index_title = "داشبورد مدیریت"
+@admin.register(LoaderSetting)
+class LoaderSettingsAdmin(admin.ModelAdmin):
+    fieldsets = (
+        ('وضعیت و زمان‌بندی', {
+            'fields': ('is_active', 'minimum_display_time')
+        }),
+        ('محتوای متنی', {
+            'fields': ('loading_text', 'loading_text_color')
+        }),
+        ('پس‌زمینه', {
+            'fields': ('background_color',)
+        }),
+        ('لوگو', {
+            'fields': ('logo', 'logo_width', 'logo_animation', 'logo_animation_duration'),
+            'classes': ('collapse',)
+        }),
+        ('دایره‌ی چرخان (اسپینر)', {
+            'fields': ('show_spinner', 'spinner_color', 'spinner_size'),
+            'classes': ('collapse',)
+        }),
+        ('نوار پیشرفت', {
+            'fields': ('show_progress_bar', 'progress_bar_color'),
+            'classes': ('collapse',)
+        }),
+    )
+    
+    list_display = ('loading_text', 'is_active', 'background_color', 'logo_animation', 'updated_date')
+    
+    list_editable = ('is_active',)
+    list_display_links = ('loading_text',)
+    
+    ordering = ('-updated_date',)
+    
+    def has_add_permission(self, request):
+        if LoaderSetting.objects.exists():
+            return False
+        return True

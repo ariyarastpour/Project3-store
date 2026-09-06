@@ -2,16 +2,20 @@ from django.shortcuts import render
 from django.views.generic import TemplateView
 from django.views.generic.edit import FormView
 from .forms import ContactForm
+from .models import AboutSetting, ContactSetting, PrivacySetting, PrivacySection
 from django.urls import reverse_lazy
 
 class IndexView(TemplateView):
     template_name = "website/index.html"
 
+
 class AboutView(TemplateView):
+    model = AboutSetting
     template_name = "website/about.html"
 
-# شرط لاگین
+
 class ContactView(FormView):
+    model = ContactSetting
     template_name = "website/contact.html"
     form_class = ContactForm
     success_url = reverse_lazy("website:home")
@@ -20,3 +24,23 @@ class ContactView(FormView):
         form.save()
         return super().form_valid(form)
     
+
+class PrivacyView(TemplateView):
+    """
+    نمایش صفحه سیاست حفظ حریم خصوصی با TemplateView
+    """
+    template_name = 'website/privacy-policy.html'
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        
+        try:
+            context['privacy_setting'] = PrivacySetting.objects.first()
+        except PrivacySetting.DoesNotExist:
+            context['privacy_setting'] = None
+        
+        context['privacy_sections'] = PrivacySection.objects.filter(
+            is_active=True
+        ).order_by('order')
+        
+        return context

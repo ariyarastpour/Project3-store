@@ -1,5 +1,5 @@
 {% for item in menu_items %}
 <li class="nav-item">
-    <a class="nav-link {% if request.path == item.url %} active {% endif %}" href="{{ item.url }}">{{ item.title }}</a>
+    <a class="nav-link secondary-text {% if request.path == item.url %} active {% endif %}" href="{{ item.url }}">{{ item.title }}</a>
 </li>
 {% endfor %}

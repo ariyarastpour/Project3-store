@@ -1,11 +1,10 @@
 {% extends "base.html" %}
 {% load website_tags %}
 {% load static %}
-{% comment %} {% load shop_tags %} {% endcomment %}
+{% load shop_tags %}
 {% block content %}
 
 {% render_hero_slider %}
-
 
 {% render_store_features %}
 
@@ -17,9 +16,7 @@
   </div>
   <!-- End Heading -->
   <div class="row mb-2">
-    {% comment %} {% popular_product "Samsung" %}
-    {% popular_product "Iphone" %}
-    {% popular_product "Pixle" %} {% endcomment %}
+    {% popular_products %}
     <!-- End Col -->
   </div>
   <!-- End Row -->
@@ -130,7 +127,7 @@
 </div>
 <!-- End Card Grid -->
 
-{% comment %} {% show_latest_products %} {% endcomment %}
+{% show_latest_products %}
 
 <!-- Subscribe -->
 <div class="bg-light">
@@ -168,7 +165,7 @@
 
         <p class="small">
           می توانید در هر زمانی اشتراک خود را لغو کنید
-          <a href="#">سیاست حفظ حریم خصوصی</a> ما را بخوانید
+          <a href="{% url 'website:privacy' %}">سیاست حفظ حریم خصوصی</a> ما را بخوانید
         </p>
       </div>
     </div>

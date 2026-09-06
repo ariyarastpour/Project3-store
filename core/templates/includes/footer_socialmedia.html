@@ -11,17 +11,13 @@
                    title="{{ social.get_display_name }}"
                    aria-label="{{ social.get_display_name }}">
                     
-                    {# نمایش آیکون #}
                     {% if social.icon %}
-                        {# اگر تصویر آپلود شده #}
                         <img src="{{ social.icon.url }}" 
                              alt="{{ social.get_display_name }}"
                              style="width: 20px; height: 20px; object-fit: contain;">
                     {% elif social.custom_icon_html %}
-                        {# اگر کد HTML دلخواه #}
                         {{ social.custom_icon_html|safe }}
                     {% else %}
-                        {# اگر کلاس آیکون #}
                         {% if social.icon_style == 'bi' %}
                             <i class="bi {{ social.icon_class }}"></i>
                         {% elif social.icon_style == 'fab' %}

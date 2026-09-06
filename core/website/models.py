@@ -154,7 +154,7 @@ class SocialMedia(models.Model):
 
 
 # Site_settings
-class SiteSettings(models.Model):
+class SiteSetting(models.Model):
     logo = models.FileField(
         upload_to='site/logo/',
         blank=True,
@@ -181,12 +181,22 @@ class SiteSettings(models.Model):
         verbose_name="رنگ اصلی تم",
         help_text="#377DFF کد هگز مثل"
     )
+    secondery_color = models.CharField(
+        max_length=7,
+        default="#677788",
+        verbose_name="رنگ نوشته ها",
+        help_text="#677788 کد هگز مثل"
+    )
+    link_hover = models.CharField(
+        max_length=7,
+        verbose_name="رنگ لینک ها درحالت هاور",
+        default="#1366ff"
+    )
     background_color = models.CharField(
         max_length=7,
         default="#FFFFFF",
         verbose_name="رنگ پس‌زمینه‌ی اصلی"
     )
-
     input_color = models.CharField(
         max_length=7,
         default="#FFFFFF",
@@ -221,47 +231,7 @@ class SiteSettings(models.Model):
         blank=True,
         verbose_name="لینک سازنده/توسعه‌دهنده"
     )
-
-    phone = models.CharField(
-        max_length=20,
-        blank=True,
-        null=True,
-        verbose_name="شماره تماس"
-    )
-
-    email = models.EmailField(
-        blank=True,
-        null=True,
-        verbose_name="ایمیل"
-    )
-
-    address = models.TextField(
-        blank=True,
-        null=True,
-        verbose_name="آدرس"
-    )
-
-    address_map = models.URLField(
-        blank=True,
-        null=True,
-        help_text="لینک نقشه گوگل یا نشان",
-        verbose_name="لینک نقشه"
-    )
-
-    contact_content = models.TextField(
-        verbose_name="متن صفحه ارتباط با ما",
-        default= 'ما همیشه خوشحال می‌شویم که به شما کمک کنیم و اطلاعات بیشتری درباره خدماتمان ارائه دهیم. می‌توانید از طریق ایمیل یا پر کردن فرم تماس با ما در ارتباط باشید. از اینکه ما را انتخاب کردید متشکریم!'
-    )
-
-    privacy_content = models.TextField(
-        verbose_name="متن صفحه حریم خصوصی",
-        default= 'ما همیشه خوشحال می‌شویم که به شما کمک کنیم و اطلاعات بیشتری درباره خدماتمان ارائه دهیم. می‌توانید از طریق ایمیل یا پر کردن فرم تماس با ما در ارتباط باشید. از اینکه ما را انتخاب کردید متشکریم!'
-    )
-
-    About_content = models.TextField(
-        verbose_name="متن صفحه حریم خصوصی",
-        default='شرکت ما با سال‌ها تجربه در زمینه فروش آنلاین، همواره تلاش کرده است بهترین خدمات را به مشتریان خود ارائه دهد.ما با ارائه محصولات باکیفیت و خدمات پس از فروش عالی، اعتماد شما را ارج می‌نهیم'
-    )
+    
 
     def __str__(self):
         return "تنظیمات عمومی سایت"
@@ -285,9 +255,10 @@ class SiteSettings(models.Model):
 
     def save(self, *args, **kwargs):
         """قبل از ذخیره، بررسی کن که رکورد دیگری وجود نداشته باشد"""
-        if not self.pk and SiteSettings.objects.exists():
+        if not self.pk and SiteSetting.objects.exists():
             raise ValidationError("⚠️ تنها یک رکورد برای تنظیمات سایت مجاز است!")
         super().save(*args, **kwargs)
+
     
 
 # Base.html
@@ -400,6 +371,25 @@ class BrandLogo(models.Model):
     
 
 #About.html
+class AboutSetting(models.Model):
+    about_title = models.CharField(max_length=200,verbose_name="موضوع صفحه درباره ما",null=True)
+    about_content = models.TextField(
+        verbose_name="متن صفحه درباره ما",
+        default='شرکت ما با سال‌ها تجربه در زمینه فروش آنلاین، همواره تلاش کرده است بهترین خدمات را به مشتریان خود ارائه دهد.ما با ارائه محصولات باکیفیت و خدمات پس از فروش عالی، اعتماد شما را ارج می‌نهیم'
+    )
+
+    def __str__(self):
+        return "اطلاعات صفحه درباره ما"
+    
+    def get_current_year(self):
+        from django.utils import timezone
+        return timezone.now().year
+    
+    def save(self, *args, **kwargs):
+        if not self.pk and AboutSetting.objects.exists():
+            raise ValidationError("⚠️ تنها یک رکورد برای اطلاعات تماس مجاز است!")
+        super().save(*args, **kwargs)
+
 class TeamMember(models.Model):
     name = models.CharField(max_length=200, verbose_name="نام و نام خانوادگی")
     role = models.CharField(max_length=200, verbose_name="سمت (مثلاً: مدیر پروژه)")
@@ -407,6 +397,14 @@ class TeamMember(models.Model):
     image = models.ImageField(upload_to='team/', verbose_name="تصویر پروفایل")
     order = models.PositiveIntegerField(default=0, verbose_name="ترتیب نمایش")
     is_active = models.BooleanField(default=True, verbose_name="وضعیت نمایش")
+
+    facebook_url = models.URLField(blank=True, null=True, verbose_name="لینک فیسبوک")
+    instagram_url = models.URLField(blank=True, null=True, verbose_name="لینک اینستاگرام")
+    twitter_url = models.URLField(blank=True, null=True, verbose_name="لینک توییتر")
+    linkedin_url = models.URLField(blank=True, null=True, verbose_name="لینک لینکدین")
+    github_url = models.URLField(blank=True, null=True, verbose_name="لینک گیت‌هاب")
+    website_url = models.URLField(blank=True, null=True, verbose_name="لینک وب‌سایت")
+
     created_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
     published_date = models.DateTimeField()
@@ -430,3 +428,298 @@ class ContactMessage(models.Model):
 
     def __str__(self):
         return f"{self.name} {self.last_name}"
+    
+
+class ContactSetting(models.Model):
+    phone = models.CharField(
+        max_length=20,
+        blank=True,
+        null=True,
+        verbose_name="شماره تماس"
+    )
+
+    email = models.EmailField(
+        blank=True,
+        null=True,
+        verbose_name="ایمیل"
+    )
+
+    address = models.TextField(
+        blank=True,
+        null=True,
+        verbose_name="آدرس"
+    )
+
+    address_map = models.URLField(
+        blank=True,
+        null=True,
+        help_text="لینک نقشه گوگل یا نشان",
+        verbose_name="لینک نقشه"
+    )
+
+    contact_title = models.CharField(max_length=200,verbose_name="موضوع صفحه ارتباط با ما",null=True)
+    contact_content = models.TextField(
+        verbose_name="متن صفحه ارتباط با ما",
+        default= 'ما همیشه خوشحال می‌شویم که به شما کمک کنیم و اطلاعات بیشتری درباره خدماتمان ارائه دهیم. می‌توانید از طریق ایمیل یا پر کردن فرم تماس با ما در ارتباط باشید. از اینکه ما را انتخاب کردید متشکریم!'
+    )
+
+    def __str__(self):
+        return "اطلاعات تماس"
+    
+    def get_current_year(self):
+        from django.utils import timezone
+        return timezone.now().year
+    
+    def save(self, *args, **kwargs):
+        if not self.pk and ContactSetting.objects.exists():
+            raise ValidationError("⚠️ تنها یک رکورد برای اطلاعات تماس مجاز است!")
+        super().save(*args, **kwargs)
+
+
+# PrivacyPolicy
+class PrivacySection(models.Model):
+    """
+    سکشن‌های داینامیک صفحه حریم خصوصی
+    کاربر می‌تواند سکشن‌ها را اضافه، ویرایش و حذف کند
+    """
+    
+    SECTION_TYPES = (
+        ('introduction', 'مقدمه'),
+        ('collect_info', 'اطلاعات جمع‌آوری شده'),
+        ('how_use', 'نحوه استفاده'),
+        ('cookies', 'کوکی‌ها'),
+        ('third_party', 'اشتراک با ثالث'),
+        ('security', 'امنیت'),
+        ('user_rights', 'حقوق کاربران'),
+        ('custom', 'سکشن دلخواه'),
+    )
+    
+    # ===== فیلدهای اصلی =====
+    section_type = models.CharField(
+        max_length=50,
+        choices=SECTION_TYPES,
+        default='custom',
+        verbose_name="نوع سکشن"
+    )
+    
+    title = models.CharField(
+        max_length=200,
+        verbose_name="عنوان سکشن",
+        help_text="عنوانی که در صفحه نمایش داده می‌شود"
+    )
+    
+    icon = models.CharField(
+        max_length=50,
+        blank=True,
+        verbose_name="آیکون",
+        help_text="مثلاً: fa-shield-alt, fa-info-circle, fa-database"
+    )
+    
+    description = models.TextField(
+        verbose_name="توضیحات مقدماتی سکشن",
+        blank=True,
+        help_text="توضیح کوتاه بالای لیست آیتم‌ها (اختیاری)"
+    )
+    
+    # ===== وضعیت =====
+    is_active = models.BooleanField(
+        default=True,
+        verbose_name="فعال"
+    )
+    
+    order = models.PositiveIntegerField(
+        default=0,
+        verbose_name="ترتیب نمایش"
+    )
+    
+    # ===== اطلاعات مدیریتی =====
+    created_date = models.DateTimeField(auto_now_add=True)
+    updated_date = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['order']
+
+    def __str__(self):
+        return f"{self.title} ({'فعال' if self.is_active else 'غیرفعال'})"
+    
+    def get_icon_html(self):
+        """دریافت آیکون به صورت HTML"""
+        if self.icon:
+            return f'<i class="fas {self.icon}"></i>'
+        return ''
+    
+    def get_items_list(self):
+        """دریافت آیتم‌ها به صورت لیست"""
+        if isinstance(self.items, list):
+            return self.items
+        return []
+
+
+class PrivacySetting(models.Model):
+    """
+    تنظیمات اصلی صفحه حریم خصوصی
+    """
+    
+    # ===== اطلاعات عمومی =====
+    page_title = models.CharField(
+        max_length=200,
+        default="سیاست حفظ حریم خصوصی",
+        verbose_name="عنوان صفحه"
+    )
+    
+    page_subtitle = models.CharField(
+        max_length=200,
+        blank=True,
+        verbose_name="زیرعنوان صفحه",
+    )
+    
+    introduction_text = models.TextField(
+        verbose_name="متن مقدمه",
+        default="ما به حریم خصوصی کاربران خود احترام می‌گذاریم. این سند نحوه جمع‌آوری، استفاده و محافظت از اطلاعات شما را شرح می‌دهد. استفاده از سایت ما به معنای پذیرش این سیاست است."
+    )
+    
+    # ===== آخرین به‌روزرسانی =====
+    last_update = models.DateField(
+        auto_now=True,
+        verbose_name="آخرین به‌روزرسانی"
+    )
+
+    def __str__(self):
+        return "تنظیمات حریم خصوصی"
+    
+    def save(self, *args, **kwargs):
+        if not self.pk and PrivacySetting.objects.exists():
+            raise ValidationError("⚠️ تنها یک رکورد برای تنظیمات حریم خصوصی مجاز است!")
+        super().save(*args, **kwargs)
+
+
+# Preloader
+class LoaderSetting(models.Model):
+    """
+    مدل تنظیمات لایه‌ی بارگذاری (پرلودر) سایت
+    قابل ویرایش در پنل ادمین
+    """
+    
+    # ===== وضعیت فعال/غیرفعال =====
+    is_active = models.BooleanField(
+        default=True,
+        verbose_name="فعال بودن لودر"
+    )
+    
+    # ===== لوگو =====
+    logo = models.FileField(
+        upload_to='site/logo/',
+        blank=True,
+        null=True,
+        verbose_name="لوگوی لودر",
+        help_text="تصویر لوگو (PNG یا SVG ترجیح داده می‌شود)"
+    )
+
+    # ===== محتوای متنی =====
+    loading_text = models.CharField(
+        max_length=100,
+        default="در حال بارگذاری",
+        verbose_name="متن بارگذاری"
+    )
+    
+    loading_text_color = models.CharField(
+        max_length=20,
+        default="#333333",
+        verbose_name="رنگ متن بارگذاری",
+        help_text="مثلاً: #333333 یا rgb(51, 51, 51)"
+    )
+    
+    # ===== پس‌زمینه =====
+    background_color = models.CharField(
+        max_length=20,
+        default="#ffffff",
+        verbose_name="رنگ پس‌زمینه لودر",
+        help_text="مثلاً: #ffffff یا white"
+    )
+    
+    logo_width = models.PositiveIntegerField(
+        default=120,
+        verbose_name="عرض لوگو (پیکسل)",
+        help_text="عرض لوگو بر حسب پیکسل"
+    )
+    
+    logo_animation = models.CharField(
+        max_length=20,
+        choices=[
+            ('spin', 'چرخش دور خود'),
+            ('pulse', 'نبض‌دار (بزرگ و کوچک)'),
+            ('bounce', 'پرشی'),
+            ('none', 'بدون انیمیشن'),
+        ],
+        default='spin',
+        verbose_name="نوع انیمیشن لوگو"
+    )
+    
+    logo_animation_duration = models.FloatField(
+        default=1.5,
+        verbose_name="مدت زمان هر دور انیمیشن (ثانیه)",
+        help_text="مثلاً 1.5 یعنی هر 1.5 ثانیه یک دور کامل"
+    )
+    
+    show_spinner = models.BooleanField(
+        default=False,
+        verbose_name="نمایش دایره‌ی چرخان (اسپینر)"
+    )
+    
+    spinner_color = models.CharField(
+        max_length=20,
+        default="#3498db",
+        verbose_name="رنگ دایره‌ی چرخان",
+        help_text="مثلاً: #3498db"
+    )
+    
+    spinner_size = models.PositiveIntegerField(
+        default=80,
+        verbose_name="اندازه دایره‌ی چرخان (پیکسل)"
+    )
+    
+    # ===== نوار پیشرفت (Progress Bar) =====
+    show_progress_bar = models.BooleanField(
+        default=False,
+        verbose_name="نمایش نوار پیشرفت"
+    )
+    
+    progress_bar_color = models.CharField(
+        max_length=20,
+        default="#3498db",
+        verbose_name="رنگ نوار پیشرفت"
+    )
+    
+    # ===== زمان نمایش =====
+    minimum_display_time = models.PositiveIntegerField(
+        default=0,
+        verbose_name="حداقل زمان نمایش (میلی‌ثانیه)",
+        help_text="مثلاً 1500 یعنی حداقل 1.5 ثانیه نمایش داده شود (0 یعنی بدون محدودیت)"
+    )
+    
+    created_date = models.DateTimeField(auto_now_add=True)
+    updated_date = models.DateTimeField(auto_now=True)
+    
+    
+    def __str__(self):
+        return f"تنظیمات لودر ({'فعال' if self.is_active else 'غیرفعال'})"
+    
+    def save(self, *args, **kwargs):
+        # اطمینان از اینکه فقط یک رکورد در دیتابیس وجود دارد
+        if not self.pk and LoaderSetting.objects.exists():
+            raise ValueError("تنها یک نمونه از تنظیمات لودر می‌تواند وجود داشته باشد!")
+        super().save(*args, **kwargs)
+
+    @classmethod
+    def get_settings(cls):
+        """دریافت تنظیمات (اگر وجود نداشت، یک نمونه پیش‌فرض ایجاد می‌کند)"""
+        settings, created = cls.objects.get_or_create(
+            id=1,
+            defaults={
+                'is_active': True,
+                'loading_text': 'در حال بارگذاری',
+                'background_color': '#ffffff',
+                'logo_animation': 'spin',
+            }
+        )
+        return settings

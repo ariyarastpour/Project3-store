@@ -1,0 +1,227 @@
+{% load static %} 
+{% if loader_settings.is_active %}
+<style>
+  :root{
+      --color-primary: {{ site_settings.primary_color }};
+      --color-background: {{ site_settings.background_color }};
+      --color-input: {{site_settings.input_color}};
+      --color-primary-hover: {{ site_settings.link_hover }};
+  }
+
+  #loader-wrapper {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: {{ loader_settings.background_color|default:'#ffffff' }};
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 99999;
+      transition: opacity 0.6s ease, visibility 0.6s ease;
+  }
+
+  #loader-wrapper.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+  }
+
+  .loader-content {
+      text-align: center;
+      padding: 20px;
+  }
+
+  /* ===== لوگو ===== */
+  .loader-logo {
+      width: {{ loader_settings.logo_width|default:120 }}px;
+      height: auto;
+      display: {% if loader_settings.logo %}block{% else %}none{% endif %};
+      margin: 0 auto;
+      animation: logo-animation {{ loader_settings.logo_animation_duration|default:1.5 }}s linear infinite;
+      image-rendering: auto;
+      backface-visibility: hidden;
+  }
+
+  /* ===== انیمیشن‌های لوگو ===== */
+  @keyframes logo-animation {
+      {% if loader_settings.logo_animation == 'spin' %}
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+      {% elif loader_settings.logo_animation == 'pulse' %}
+      0% { transform: scale(0.95); opacity: 0.7; }
+      100% { transform: scale(1.05); opacity: 1; }
+      {% elif loader_settings.logo_animation == 'bounce' %}
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-20px); }
+      {% else %}
+      0%, 100% { transform: none; }
+      {% endif %}
+  }
+
+  /* ===== دایره‌ی چرخان (اسپینر) ===== */
+  .loader-spinner {
+      width: {{ loader_settings.spinner_size|default:80 }}px;
+      height: {{ loader_settings.spinner_size|default:80 }}px;
+      margin: 0 auto 20px;
+      border: 4px solid {{ loader_settings.spinner_color|default:'#3498db' }}33;
+      border-top: 4px solid {{ loader_settings.spinner_color|default:'#3498db' }};
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      display: {% if loader_settings.show_spinner %}block{% else %}none{% endif %};
+  }
+
+  @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+  }
+
+  /* ===== متن بارگذاری ===== */
+  .loader-text {
+      margin-top: 20px;
+      font-family: sans-serif;
+      color: {{ loader_settings.loading_text_color|default:'#333333' }};
+      font-size: 14px;
+      letter-spacing: 1px;
+      font-weight: 500;
+  }
+
+  /* انیمیشن نقطه‌چین برای نوشته */
+  .loader-text::after {
+      content: '';
+      animation: dots 1.5s steps(4, end) infinite;
+  }
+
+  @keyframes dots {
+      0% { content: ''; }
+      25% { content: '.'; }
+      50% { content: '..'; }
+      75% { content: '...'; }
+      100% { content: ''; }
+  }
+
+  /* ===== نوار پیشرفت ===== */
+  .progress-bar {
+      width: 200px;
+      height: 3px;
+      background: {{ loader_settings.progress_bar_color|default:'#3498db' }}33;
+      border-radius: 10px;
+      margin: 15px auto 0;
+      overflow: hidden;
+      display: {% if loader_settings.show_progress_bar %}block{% else %}none{% endif %};
+  }
+
+  .progress-fill {
+      width: 0%;
+      height: 100%;
+      background: {{ loader_settings.progress_bar_color|default:'#3498db' }};
+      border-radius: 10px;
+      animation: loading 2s ease-in-out infinite;
+  }
+
+  @keyframes loading {
+      0% { width: 0%; }
+      50% { width: 70%; }
+      100% { width: 100%; }
+  }
+
+  /* ===== واکنش‌گرایی (موبایل) ===== */
+  @media (max-width: 768px) {
+      .loader-logo {
+          width: {{ loader_settings.logo_width|default:120|add:"-40" }}px;
+      }
+      .loader-spinner {
+          width: {{ loader_settings.spinner_size|default:80|add:"-20" }}px;
+          height: {{ loader_settings.spinner_size|default:80|add:"-20" }}px;
+      }
+      .loader-text {
+          font-size: 12px;
+      }
+      .progress-bar {
+          width: 150px;
+      }
+  }
+</style>
+
+<div id="loader-wrapper">
+  <div class="loader-content">
+    <!-- دایره‌ی چرخان (اسپینر) -->
+    <div class="loader-spinner"></div>
+
+    <!-- لوگو -->
+    {% if loader_settings.logo %}
+    <img
+      src="{{ loader_settings.logo.url }}"
+      alt="لوگوی سایت"
+      class="loader-logo"
+    />
+    {% endif %}
+
+    <!-- متن بارگذاری -->
+    <div class="loader-text">
+      {{ loader_settings.loading_text|default:'در حال بارگذاری' }}
+    </div>
+
+    <!-- نوار پیشرفت -->
+    <div class="progress-bar">
+      <div class="progress-fill"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function() {
+      'use strict';
+
+      var loader = document.getElementById('loader-wrapper');
+      var minDisplayTime = {{ loader_settings.minimum_display_time|default:0 }};
+      var isHidden = false;
+
+      function hideLoader() {
+          if (loader && !isHidden) {
+              loader.classList.add('hidden');
+              document.body.classList.remove('loading');
+              isHidden = true;
+          }
+      }
+
+      if (minDisplayTime > 0) {
+          var startTime = Date.now();
+
+          window.addEventListener('load', function() {
+              var elapsed = Date.now() - startTime;
+              var remaining = minDisplayTime - elapsed;
+
+              if (remaining > 0) {
+                  setTimeout(hideLoader, remaining);
+              } else {
+                  hideLoader();
+              }
+          });
+      } else {
+          window.addEventListener('load', hideLoader);
+      }
+
+      setTimeout(function() {
+          if (loader && !loader.classList.contains('hidden')) {
+              hideLoader();
+          }
+      }, 10000);
+
+      window.addEventListener('pageshow', function(event) {
+          if (event.persisted) {
+              hideLoader();
+          }
+      });
+
+  })();
+</script>
+
+{% else %}
+<style>
+  #loader-wrapper {
+    display: none !important;
+  }
+</style>
+{% endif %}

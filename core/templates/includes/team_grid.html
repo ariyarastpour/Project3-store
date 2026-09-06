@@ -1,0 +1,124 @@
+{% load static %}
+<!-- Team -->
+<div class="container content-space-2 content-space-lg-3">
+  <!-- Heading -->
+  <div class="w-md-75 w-lg-50 text-center mx-md-auto mb-5 mb-md-9">
+    <span class="text-cap">تیم ما</span>
+    <h2>ذهن های خلاق</h2>
+  </div>
+  <!-- End Heading -->
+
+  <!-- Team Members Grid -->
+  <div class="row gx-3 mb-5">
+    
+    {% for member in members %}
+    <div class="col-sm-6 col-lg-3 mb-3">
+      <!-- Card -->
+      <div class="card card-transition h-100">
+        <div class="card-body">
+          <div class="avatar avatar-lg avatar-circle mb-4">
+            <img class="avatar-img" src="{{ member.image.url }}" alt="{{ member.name }}">
+          </div>
+
+          <span class="card-subtitle">{{ member.role }}</span>
+          <h4 class="card-title">{{ member.name }}</h4>
+          <p class="card-text">{{ member.bio }}</p>
+        </div>
+
+        <div class="card-footer pt-0">
+        <!-- Socials -->
+        <ul class="list-inline mb-0">
+            {% if member.facebook_url %}
+            <li class="list-inline-item">
+                <a class="btn btn-outline-primary btn-xs btn-icon rounded" 
+                  href="{{ member.facebook_url }}" 
+                  target="_blank"
+                  title="فیسبوک">
+                    <i class="bi-facebook"></i>
+                </a>
+            </li>
+            {% endif %}
+            
+            {% if member.instagram_url %}
+            <li class="list-inline-item">
+                <a class="btn btn-outline-danger btn-xs btn-icon rounded" 
+                  href="{{ member.instagram_url }}" 
+                  target="_blank"
+                  title="اینستاگرام">
+                    <i class="bi-instagram"></i>
+                </a>
+            </li>
+            {% endif %}
+            
+            {% if member.twitter_url %}
+            <li class="list-inline-item">
+                <a class="btn btn-outline-info btn-xs btn-icon rounded" 
+                  href="{{ member.twitter_url }}" 
+                  target="_blank"
+                  title="توییتر">
+                    <i class="bi-twitter"></i>
+                </a>
+            </li>
+            {% endif %}
+            
+            {% if member.linkedin_url %}
+            <li class="list-inline-item">
+                <a class="btn btn-outline-primary btn-xs btn-icon rounded" 
+                  href="{{ member.linkedin_url }}" 
+                  target="_blank"
+                  title="لینکدین">
+                    <i class="bi bi-linkedin"></i>
+                </a>
+            </li>
+            {% endif %}
+            
+            {% if member.github_url %}
+            <li class="list-inline-item">
+                <a class="btn btn-outline-dark btn-xs btn-icon rounded" 
+                  href="{{ member.github_url }}" 
+                  target="_blank"
+                  title="گیت‌هاب">
+                    <i class="bi bi-github"></i>
+                </a>
+            </li>
+            {% endif %}
+            
+            {% if member.website_url %}
+            <li class="list-inline-item">
+                <a class="btn btn-outline-secondary btn-xs btn-icon rounded" 
+                  href="{{ member.website_url }}" 
+                  target="_blank"
+                  title="وب‌سایت">
+                    <i class="bi bi-globe"></i>
+                </a>
+            </li>
+            {% endif %}
+            
+            {% if not member.facebook_url and not member.instagram_url and not member.twitter_url and not member.linkedin_url and not member.github_url and not member.website_url %}
+            <li class="list-inline-item">
+                <span class="text-muted small">شبکه اجتماعی ندارد</span>
+            </li>
+            {% endif %}
+        </ul>
+        <!-- End Socials -->
+    </div>
+      </div>
+      <!-- End Card -->
+    </div>
+    <!-- End Col -->
+    {% endfor %}
+
+  </div>
+  <!-- End Row -->
+
+  <!-- Card Info -->
+  <div class="text-center">
+    <div class="card card-info-link card-sm">
+      <div class="card-body">
+        میخواهی با ما کار کنی؟ <a class="card-link ms-2" href="{% url 'website:contact' %}">استخدام می کنیم<span class="bi-chevron-left small me-1"></span></a>
+      </div>
+    </div>
+  </div>
+  <!-- End Card Info -->
+</div>
+<!-- End Team -->

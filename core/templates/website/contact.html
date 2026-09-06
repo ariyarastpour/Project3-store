@@ -1,15 +1,15 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}ارتباط با ما{% endblock %}
+{% block title %}{{ contactsetting.contact_title|default:"تماس با ما" }} | {{ site_settings.site_name|default:"فروشگاه" }}{% endblock %}
 
 {% block content %}
         <!-- Hero -->
         <div class="position-relative bg-img-start" style="background-image: url(./assets/svg/components/card-11.svg);">
             <div class="container content-space-t-3 content-space-t-lg-5 content-space-b-2 position-relative zi-2">
                 <div class="w-md-75 w-lg-50 text-center mx-md-auto mb-5 mb-md-9">
-                    <h1>تماس با ما</h1>
-                    <p>نظرات و انتقادات خود را بیان کنین</p>
+                    <h1>{{site_settings.contact_title}}</h1>
+                    <p>{{site_settings.contact_content}}</p>
                 </div>
 
                 <div class="row">

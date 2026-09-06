@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path, include
 from . import views
 
 app_name = 'shop'
@@ -9,4 +9,5 @@ urlpatterns = [
     path("products/list/grid/", views.GridView.as_view(), name="list_grid"),
     path("product/<int:pk>/detail/", views.DetailViewModel.as_view(), name="detail"),
     path("category/<slug:slug>", views.CategoryView, name="category"),
+    path("api/v1/", include("shop.api.v1.urls"))
 ]
