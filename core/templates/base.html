@@ -1,72 +1,100 @@
 {% load static %}
 
-<!DOCTYPE html>
+<!doctype html>
 <html lang="fa" dir="rtl">
+  <head>
+    <!-- Required Meta Tags Always Come First -->
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
 
-<head>
-  <!-- Required Meta Tags Always Come First -->
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Title -->
+    <title>
+      {% block title %} {{ site_settings.site_name }} {% endblock %}
+    </title>
 
-  <!-- Title -->
-  <title>{% block title %} {{ site_settings.site_name }} {% endblock %}</title>
+    <!-- Font -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
 
-  <!-- Font -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <!-- CSS Implementing Plugins -->
+    <link rel="stylesheet" href="{% static 'css/vendor.min.css' %}" />
+    <link
+      rel="stylesheet"
+      href="{% static 'vendor/bootstrap-icons/font/bootstrap-icons.css' %}"
+    />
 
-  <!-- CSS Implementing Plugins -->
-  <link rel="stylesheet" href="{% static 'css/vendor.min.css' %}">
-  <link rel="stylesheet" href="{% static 'vendor/bootstrap-icons/font/bootstrap-icons.css' %}">
+    <!-- ====== اضافه شد: CSS Swiper ====== -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"
+    />
 
-  <!-- CSS Front Template -->
-  <link rel="stylesheet" href="{% static 'css/theme.min.css' %}?v=1.0">
+    <!-- CSS Front Template -->
+    <link rel="stylesheet" href="{% static 'css/theme.min.css' %}?v=1.0" />
 
-  <!-- CSS Toastify -->
-  <link rel="stylesheet" href="{% static 'vendor/toastify/toastify.css' %}">
+    <!-- CSS Toastify -->
+    <link rel="stylesheet" href="{% static 'vendor/toastify/toastify.css' %}" />
 
- 
-  <style>
-    body {
-        background-color: {{ site_settings.background_color|default:'#FFFFFF' }} !important;
-    }
-    
-    /* فیلدهای ورودی */
-    .form-control,
-    .form-select,
-    input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]):not([type="button"]),
-    textarea {
-        background-color: {{ site_settings.input_color|default:'#FFFFFF' }} !important;
-    }
-    
-    /* فونت سفارشی */
-    {% if site_settings.use_custom_font and site_settings.custom_font_file %}
-    @font-face {
-        font-family: '{{ site_settings.custom_font_name }}';
-        src: url('{{ site_settings.custom_font_file.url }}') format('woff2');
-        font-display: swap;
-    }
-    body, p, h1, h2, h3, h4, h5, h6,
-    .nav-link, .dropdown-item, .btn,
-    .form-control, .form-select, input, textarea,
-    .card, .modal, .offcanvas, .popover, .tooltip {
-        font-family: '{{ site_settings.custom_font_name }}', '{{ site_settings.font_family|default:"sans-serif" }}', sans-serif !important;
-    }
-    {% else %}
-    body, p, h1, h2, h3, h4, h5, h6,
-    .nav-link, .dropdown-item, .btn,
-    .form-control, .form-select, input, textarea,
-    .card, .modal, .offcanvas, .popover, .tooltip {
-        font-family: '{{ site_settings.font_family|default:"sans-serif" }}', sans-serif !important;
-    }
-    {% endif %}
-  </style>
-  <!-- ============================================ -->
+    <style>
+      body {
+          background-color: {{ site_settings.background_color|default:'#FFFFFF' }} !important;
+      }
 
-  {% block extera-css %} {% endblock extera-css %}
-</head>
+      /* فیلدهای ورودی */
+      .form-control,
+      .form-select,
+      input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]):not([type="button"]),
+      textarea {
+          background-color: {{ site_settings.input_color|default:'#FFFFFF' }} !important;
+      }
 
-<body>
+      .swiper-button-next::after,
+      .swiper-button-prev::after {
+          display: none !important;
+      }
 
+      .swiper-button-next i,
+      .swiper-button-prev i {
+          display: block !important;
+      }
+
+      .swiper-button-next i,
+      .swiper-button-prev i:hover {
+          color: #377DFF;
+      }
+
+      {% if site_settings.use_custom_font and site_settings.custom_font_file %}
+      @font-face {
+          font-family: '{{ site_settings.custom_font_name }}';
+          src: url('{{ site_settings.custom_font_file.url }}') format('woff2');
+          font-display: swap;
+      }
+      body, p, h1, h2, h3, h4, h5, h6,
+      .nav-link, .dropdown-item, .btn,
+      .form-control, .form-select, input, textarea,
+      .card, .modal, .offcanvas, .popover, .tooltip {
+          font-family: '{{ site_settings.custom_font_name }}', '{{ site_settings.font_family|default:"sans-serif" }}', sans-serif !important;
+      }
+      {% else %}
+      body, p, h1, h2, h3, h4, h5, h6,
+      .nav-link, .dropdown-item, .btn,
+      .form-control, .form-select, input, textarea,
+      .card, .modal, .offcanvas, .popover, .tooltip {
+          font-family: '{{ site_settings.font_family|default:"sans-serif" }}', sans-serif !important;
+      }
+      {% endif %}
+    </style>
+    <!-- ============================================ -->
+
+    {% block extera-css %} {% endblock extera-css %}
+  </head>
+
+  <body>
     <!-- ========== PRELOADER ========== -->
     {% include "preloader/preloader.html" %}
     <!-- ========== END PRELOADER  ========== -->
@@ -74,20 +102,26 @@
     <!-- ========== HEADER ========== -->
     {% include "includes/header.html" %}
     <!-- ========== END HEADER ========== -->
-  
+
     <!-- ========== MAIN CONTENT ========== -->
-    <main id="content" role="main">{% block content %}{% endblock content %}</main>
+    <main id="content" role="main">
+      {% block content %}{% endblock content %}
+    </main>
     <!-- ========== END MAIN CONTENT ========== -->
 
     <!-- ========== FOOTER ========== -->
     {% include "includes/footer.html" %}
     <!-- ========== END FOOTER ========== -->
-    
+
     <!-- ========== SECONDARY CONTENTS ========== -->
     <!-- Sign Up -->
 
     <!-- Go To -->
-    <a class="js-go-to go-to position-fixed" href="javascript:;" style="visibility: hidden;" data-hs-go-to-options='{
+    <a
+      class="js-go-to go-to position-fixed"
+      href="javascript:;"
+      style="visibility: hidden"
+      data-hs-go-to-options='{
       "offsetTop": 700,
       "position": {
         "init": {
@@ -100,220 +134,224 @@
           "bottom": "-2rem"
         }
       }
-    }'>
-       <i class="bi-chevron-up"></i>
-   </a>
+    }'
+    >
+      <i class="bi-chevron-up"></i>
+    </a>
     <!-- ========== END SECONDARY CONTENTS ========== -->
 
- <!-- connect jquery to our project -->
- <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <!-- ========== END SECONDARY CONTENTS ========== -->
+    <!-- connect jquery to our project -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 
-  <!-- JS Implementing Plugins -->
-  <script src="{% static 'js/vendor.min.js' %}"></script>
+    <!-- JS Implementing Plugins -->
+    <script src="{% static 'js/vendor.min.js' %}"></script>
 
-  <!-- JS Front -->
-  <script src="{% static 'js/theme.min.js' %}"></script>
-  <!-- JS Toastify -->
-  <script src="{% static 'vendor/toastify/toastify.js' %}"></script>
-  
-  <!-- JS Plugins Init. -->
-  <script>
-    (function () {
-      // INITIALIZATION OF MEGA MENU
-      // =======================================================
-      new HSMegaMenu('.js-mega-menu', {
-        desktop: {
-          position: 'left'
-        }
-      })
+    <!-- JS Front -->
+    <script src="{% static 'js/theme.min.js' %}"></script>
+    <!-- JS Toastify -->
+    <script src="{% static 'vendor/toastify/toastify.js' %}"></script>
+    <!-- JS Plugins Init. -->
+    <script>
+      (function () {
+        // INITIALIZATION OF MEGA MENU
+        // =======================================================
+        new HSMegaMenu(".js-mega-menu", {
+          desktop: {
+            position: "left",
+          },
+        });
 
-      // INITIALIZATION OF SHOW ANIMATIONS
-      // =======================================================
-      new HSShowAnimation('.js-animation-link')
+        // INITIALIZATION OF SHOW ANIMATIONS
+        // =======================================================
+        new HSShowAnimation(".js-animation-link");
 
-      // INITIALIZATION OF BOOTSTRAP DROPDOWN
-      // =======================================================
-      HSBsDropdown.init()
+        // INITIALIZATION OF BOOTSTRAP DROPDOWN
+        // =======================================================
+        HSBsDropdown.init();
 
-      // INITIALIZATION OF GO TO
-      // =======================================================
-      new HSGoTo('.js-go-to')
+        // INITIALIZATION OF GO TO
+        // =======================================================
+        new HSGoTo(".js-go-to");
 
-      // =======================================================
-      // INITIALIZATION OF HERO SWIPER
-      // =======================================================
-      var heroThumbs = new Swiper('.js-swiper-shop-hero-thumbs', {
-        watchSlidesVisibility: true,
-        watchSlidesProgress: true,
-        history: false,
-        slidesPerView: 3,
-        spaceBetween: 15,
-        on: {
-          beforeInit: (swiper) => {
-            const css = `.swiper-slide-thumb-active .swiper-thumb-progress .swiper-thumb-progress-path {
+        // INITIALIZATION OF SWIPER
+        // =======================================================
+        var sliderThumbs = new Swiper(".js-swiper-shop-hero-thumbs", {
+          watchSlidesVisibility: true,
+          watchSlidesProgress: true,
+          history: false,
+          slidesPerView: 3,
+          spaceBetween: 15,
+          on: {
+            beforeInit: (swiper) => {
+              const css = `.swiper-slide-thumb-active .swiper-thumb-progress .swiper-thumb-progress-path {
                   opacity: 1;
                   -webkit-animation: ${swiper.originalParams.autoplay.delay}ms linear 0ms forwards swiperThumbProgressDash;
                   animation: ${swiper.originalParams.autoplay.delay}ms linear 0ms forwards swiperThumbProgressDash;
-              }`
-            style = document.createElement('style')
-            document.head.appendChild(style)
-            style.type = 'text/css'
-            style.appendChild(document.createTextNode(css));
+              }`;
+              style = document.createElement("style");
+              document.head.appendChild(style);
+              style.type = "text/css";
+              style.appendChild(document.createTextNode(css));
 
-            swiper.el.querySelectorAll('.js-swiper-thumb-progress')
-              .forEach(slide => {
-                slide.insertAdjacentHTML('beforeend', '<span class="swiper-thumb-progress"><svg version="1.1" viewBox="0 0 160 160"><path class="swiper-thumb-progress-path" d="M 79.98452083651917 4.000001576345426 A 76 76 0 1 1 79.89443752470656 4.0000733121155605 Z"></path></svg></span>')
-              })
+              swiper.el
+                .querySelectorAll(".js-swiper-thumb-progress")
+                .forEach((slide) => {
+                  slide.insertAdjacentHTML(
+                    "beforeend",
+                    '<span class="swiper-thumb-progress"><svg version="1.1" viewBox="0 0 160 160"><path class="swiper-thumb-progress-path" d="M 79.98452083651917 4.000001576345426 A 76 76 0 1 1 79.89443752470656 4.0000733121155605 Z"></path></svg></span>',
+                  );
+                });
+            },
           },
-        },
-      });
+        });
 
-      var heroSwiper = new Swiper('.js-swiper-shop-classic-hero', {
+        var swiper = new Swiper(".js-swiper-shop-classic-hero", {
+          autoplay: true,
+          loop: true,
+          navigation: {
+            nextEl: ".js-swiper-shop-classic-hero-button-next",
+            prevEl: ".js-swiper-shop-classic-hero-button-prev",
+          },
+          thumbs: {
+            swiper: sliderThumbs,
+          },
+        });
+
+        // INITIALIZATION OF COUNTDOWN
+        // =======================================================
+        const oneYearFromNow = new Date();
+
+        document.querySelectorAll(".js-countdown").forEach((item) => {
+          const days = item.querySelector(".js-cd-days"),
+            hours = item.querySelector(".js-cd-hours"),
+            minutes = item.querySelector(".js-cd-minutes"),
+            seconds = item.querySelector(".js-cd-seconds");
+
+          countdown(
+            oneYearFromNow.setFullYear(oneYearFromNow.getFullYear() + 1),
+            (ts) => {
+              days.innerHTML = ts.days;
+              hours.innerHTML = ts.hours;
+              minutes.innerHTML = ts.minutes;
+              seconds.innerHTML = ts.seconds;
+            },
+            countdown.DAYS |
+              countdown.HOURS |
+              countdown.MINUTES |
+              countdown.SECONDS,
+          );
+        });
+      })();
+    </script>
+
+    <script>
+      $(document).ready(function () {
+        let urlParameters = new URLSearchParams(window.location.search);
+        $("#page-size-filter").val(urlParameters.get("page_size") || "");
+        $("#order-by-filter").val(
+          urlParameters.get("order_by") || "-created_date",
+        );
+        $("#search-query-filter").val(urlParameters.get("q") || "");
+        $("#min-price-filter").val(urlParameters.get("min_price") || "");
+        $("#max-price-filter").val(urlParameters.get("max_price") || "");
+        $("#category-id-filter").val(urlParameters.get("category_id") || "");
+      });
+      // --------------------------------------
+      $("#order-by-filter").change(function () {
+        let urlParameters = new URLSearchParams(window.location.search);
+        var selectedOption = $(this).val();
+        urlParameters.set("order_by", selectedOption);
+        let new_url = window.location.pathname + "?" + urlParameters;
+        window.location.href = new_url;
+      });
+      // --------------------------------------
+      $("#page-size-filter").change(function () {
+        let urlParameters = new URLSearchParams(window.location.search);
+        var selectedOption = $(this).val();
+        urlParameters.set("page_size", selectedOption);
+        let new_url = window.location.pathname + "?" + urlParameters;
+        window.location.href = new_url;
+      });
+      // --------------------------------------
+      function changePage(page_num) {
+        let urlParameters = new URLSearchParams(window.location.search);
+        urlParameters.set("page", page_num);
+        let new_url = window.location.pathname + "?" + urlParameters;
+        window.location.href = new_url;
+      }
+      // --------------------------------------
+      function addProd(product_id) {
+        $.ajax({
+          type: "POST",
+          url: "cart:add-prod",
+          data: {
+            product_id: product_id,
+            csrfmiddlewaretoken: "{{ csrf_token }}",
+          },
+          success: function (response) {
+            $("#cart-item-count").html(response.total_quantity);
+            Toastify({
+              text: response.message,
+              className: "success",
+              style: {
+                background: "#4CAF50",
+              },
+            }).showToast();
+          },
+          error: function (jqXHR, textStatus, errorThrown) {
+            console.log(response);
+          },
+        });
+      }
+      // --------------------------------------
+      function modify_wish(element, product_id) {
+        $.ajax({
+          type: "POST",
+          url: "shop:modify-wish",
+          data: {
+            product_id: product_id,
+            csrfmiddlewaretoken: "{{ csrf_token }}",
+          },
+          success: function (response) {
+            Toastify({
+              text: response.message,
+              className: "success",
+              style: {
+                background: "#4CAF50",
+              },
+            }).showToast();
+            $(element).toggleClass("active");
+          },
+          error: function (jqXHR, textStatus, errorThrown) {
+            console.log(response);
+          },
+        });
+      }
+
+      // INITIALIZATION OF SWIPER
+      // =======================================================
+      var swiper = new Swiper(".js-swiper-shop-product", {
+        effect: "fade",
         autoplay: true,
         loop: true,
         navigation: {
-          nextEl: '.js-swiper-shop-classic-hero-button-next',
-          prevEl: '.js-swiper-shop-classic-hero-button-prev',
+          nextEl: ".js-swiper-shop-product-button-next",
+          prevEl: ".js-swiper-shop-product-button-prev",
         },
         thumbs: {
-          swiper: heroThumbs
-        }
+          swiper: sliderThumbs,
+        },
       });
 
-      // =======================================================
-      // INITIALIZATION OF PRODUCT GALLERY SWIPER
-      // =======================================================
-      var productThumbs = new Swiper('.js-swiper-shop-product-thumb', {
+      var sliderThumbs = new Swiper(".js-swiper-shop-product-thumb", {
         slidesPerView: 3,
-        spaceBetween: 10,
         watchSlidesVisibility: true,
         watchSlidesProgress: true,
+        history: false,
       });
-
-      var productSwiper = new Swiper('.js-swiper-shop-product', {
-        slidesPerView: 1,
-        spaceBetween: 20,
-        loop: true,
-        navigation: {
-          nextEl: '.js-swiper-shop-product-button-next',
-          prevEl: '.js-swiper-shop-product-button-prev',
-        },
-        thumbs: {
-          swiper: productThumbs
-        }
-      });
-
-      // INITIALIZATION OF COUNTDOWN
-      // =======================================================
-      const oneYearFromNow = new Date()
-
-      document.querySelectorAll('.js-countdown').forEach(item => {
-        const days = item.querySelector('.js-cd-days'),
-          hours = item.querySelector('.js-cd-hours'),
-          minutes = item.querySelector('.js-cd-minutes'),
-          seconds = item.querySelector('.js-cd-seconds')
-
-        countdown(oneYearFromNow.setFullYear(
-          oneYearFromNow.getFullYear() + 1),
-          ts => {
-            days.innerHTML = ts.days
-            hours.innerHTML = ts.hours
-            minutes.innerHTML = ts.minutes
-            seconds.innerHTML = ts.seconds
-          },
-          countdown.DAYS | countdown.HOURS | countdown.MINUTES | countdown.SECONDS
-        )
-      })
-    })()
-  </script>
-
-  <script>
-    $(document).ready(function(){
-      let urlParameters = new URLSearchParams(window.location.search)
-      $('#page-size-filter').val(urlParameters.get('page_size') || '')
-      $('#order-by-filter').val(urlParameters.get('order_by') || '-created_date')
-      $('#search-query-filter').val(urlParameters.get('q') || '')
-      $('#min-price-filter').val(urlParameters.get('min_price') || '')
-      $('#max-price-filter').val(urlParameters.get('max_price') || '')
-      $('#category-id-filter').val(urlParameters.get('category_id') || '')
-    });
-  // --------------------------------------
-    $('#order-by-filter').change(function(){
-      let urlParameters = new URLSearchParams(window.location.search)
-      var selectedOption = $(this).val();
-      urlParameters.set('order_by',selectedOption)
-      let new_url = window.location.pathname + '?' + urlParameters
-      window.location.href = new_url
-    });
-  // --------------------------------------
-    $('#page-size-filter').change(function(){
-      let urlParameters = new URLSearchParams(window.location.search)
-      var selectedOption = $(this).val();
-      urlParameters.set('page_size',selectedOption)
-      let new_url = window.location.pathname + '?' + urlParameters
-      window.location.href = new_url
-    });
-  // --------------------------------------
-    function changePage(page_num){
-    let urlParameters = new URLSearchParams(window.location.search)
-    urlParameters.set('page',page_num)
-    let new_url = window.location.pathname + '?' + urlParameters
-    window.location.href = new_url
-  };
-  // --------------------------------------
-    function addProd(product_id) {
-      $.ajax({
-      type: "POST",
-      url: "{% url 'website:home' %}",                                                                                  
-      data: {
-        'product_id': product_id,
-        csrfmiddlewaretoken: '{{ csrf_token }}',
-      },
-      success: function(response){
-        $('#cart-item-count').html(response.total_quantity)
-        Toastify({
-              text: response.message,
-              className: "success",
-              style: {
-                background: "#4CAF50",
-              }
-          }).showToast();
-      },
-      error: function(jqXHR,textStatus,errorThrown) {
-        console.log(response)
-      }
-    )};
-  // --------------------------------------
-    function modify_wish(element,product_id) {
-      $.ajax({
-      type: "POST",
-      url: "{% url 'website:home' %}",
-      data: {
-        'product_id': product_id,
-        csrfmiddlewaretoken: '{{ csrf_token }}',
-      },
-      success: function(response){
-        Toastify({
-              text: response.message,
-              className: "success",
-              style: {
-                background: "#4CAF50",
-              }
-          }).showToast();
-        $(element).toggleClass('active');
-      },
-      error: function(jqXHR,textStatus,errorThrown) {
-        console.log(response)
-      }
-    });
-    }
-
     </script>
-  
-    {% block extera-js %} {% endblock extera-js %}
 
-    {% include "messages.html" %}
-
-</body>
-
+    {% block extera-js %} {% endblock extera-js %} {% include "messages.html" %}
+  </body>
 </html>

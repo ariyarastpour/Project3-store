@@ -20,7 +20,7 @@ RECAPTCHA_PRIVATE_KEY = '6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe'
 
 # ===== نادیده گرفتن خطا =====
 SILENCED_SYSTEM_CHECKS = [
-    'django_recaptcha.recaptcha_test_key_error',  # نادیده گرفتن خطای کلید تست
+    'django_recaptcha.recaptcha_test_key_error',
 ]
 
 # Application definition
@@ -32,6 +32,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django_recaptcha',
+    'django.contrib.sites',
+    'django.contrib.sitemaps',
     'website',  
     'django.contrib.humanize',
     #'cart',    
@@ -54,6 +56,8 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'core.urls'
+
+SITE_ID = 1
 
 TEMPLATES = [
     {
@@ -131,4 +135,3 @@ AUTH_USER_MODEL = 'accounts.User'
 
 #404 
 # DEBUG_PROPAGATE_EXCEPTIONS = True
-

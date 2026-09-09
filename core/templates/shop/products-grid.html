@@ -203,7 +203,7 @@
                   </div>
 
                   <h4 class="card-title">
-                    <a class="text-dark" href="{% url 'shop:detail' product.id %}">{{product.title}}</a>
+                    <a class="text-dark" href="{% url 'shop:detail' product.slug %}">{{product.title}}</a>
                   </h4>
                   {% if product.discount_percent %}
                   <p class="card-text text-dark">{{product.offer|intcomma}} <span class="text-body ms-1"><del>{{product.price|intcomma}} تومان</del></span></p>

@@ -1,24 +1,19 @@
-from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from rest_framework import status
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from ...models import Product, Category
 from .serializers import ProductSerializer, CategorySerializer
+from rest_framework import viewsets
+from django.shortcuts import get_object_or_404
 
-@api_view(["GET","POST"])
-def ProductApiList(request):
-    products = Product.objects.filter(status=1)
-    if request.method == "GET":
-        serializer = ProductSerializer(products, many=True)
-        return Response(serializer.data)
-    elif request.method == "POST":
-        serializer  = ProductSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        else:
-            return Response(serializer.errors)
+# products
+class ProductModelViewSet(viewsets.ModelViewSet):
+    queryset = Product.objects.filter(status=1)
+    serializer_class = ProductSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly]
 
-@api_view()
-def CategoryApiList(request):
-    categories = Category.objects.all()
-    serializer = CategorySerializer(categories, many=True)
-    return  Response(serializer.data)
+
+class CategoryModelViewSet(viewsets.ModelViewSet):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+    permissions_classes = [IsAuthenticatedOrReadOnly]

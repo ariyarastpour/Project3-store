@@ -1,9 +1,11 @@
 from django.urls import path
 from . import views
+from rest_framework import routers
 
 app_name = 'shop-api-v1'
 
-urlpatterns = [
-    path('products/', views.ProductApiList, name="products-list"),
-    path('categories/', views.CategoryApiList, name="categories-list"),
-]
+
+router = routers.DefaultRouter()
+router.register('products', views.ProductModelViewSet, basename='product')
+router.register('categories', views.CategoryModelViewSet, basename='category')
+urlpatterns = router.urls

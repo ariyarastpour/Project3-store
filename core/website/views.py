@@ -20,15 +20,19 @@ class ContactView(FormView):
     form_class = ContactForm
     success_url = reverse_lazy("website:home")
 
+    def get_initial(self):
+        initial = super().get_initial()
+        if self.request.user.is_authenticated:
+            initial['email'] = self.request.user.email
+
+        return initial
+
     def form_valid(self, form):
         form.save()
         return super().form_valid(form)
     
 
 class PrivacyView(TemplateView):
-    """
-    نمایش صفحه سیاست حفظ حریم خصوصی با TemplateView
-    """
     template_name = 'website/privacy-policy.html'
     
     def get_context_data(self, **kwargs):
