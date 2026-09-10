@@ -167,46 +167,39 @@ class HeaderMenuItemAdmin(admin.ModelAdmin):
 # ===== ۸. ادمین Footer ======================================
 # ============================================================
 
+
 class FooterLinkInline(admin.TabularInline):
     model = FooterLink
     extra = 1
-    fields = ('title', 'url', 'order', 'is_active')
 
 
 @admin.register(FooterColumn)
 class FooterColumnAdmin(admin.ModelAdmin):
-    inlines = [FooterLinkInline]
-    list_display = ('title', 'is_active', 'order')
-    list_editable = ('is_active', 'order')
+    list_display = ('title', 'order', 'is_active')
+    list_editable = ('order', 'is_active')
     search_fields = ('title',)
-    
-    def save_model(self, request, obj, form, change):
-        if not obj.published_date:
-            obj.published_date = now()
-        super().save_model(request, obj, form, change)
+    inlines = [FooterLinkInline]
 
 
 @admin.register(FooterLink)
 class FooterLinkAdmin(admin.ModelAdmin):
-    list_display = ('title', 'column', 'url', 'is_active', 'order')
-    list_editable = ('is_active', 'order', 'url')
+    list_display = ('title', 'column', 'url', 'order', 'is_active')
+    list_editable = ('order', 'is_active')
     list_filter = ('column', 'is_active')
     search_fields = ('title', 'url')
-    
-    def save_model(self, request, obj, form, change):
-        if not obj.published_date:
-            obj.published_date = now()
-        super().save_model(request, obj, form, change)
-
 
 # ============================================================
 # ===== ۹. ادمین Heroslider ==================================
 # ============================================================
 
-class HeroBottomIconInline(admin.TabularInline):
+class HeroBottomIconInline(admin.StackedInline):
     model = HeroBottomIcon
-    extra = 1
+    extra = 0
+    max_num = 1
+    can_delete = True
     fields = ('image', 'title', 'order')
+    verbose_name = 'آیکون پایین اسلایدر'
+    verbose_name_plural = 'آیکون پایین اسلایدر'
 
 
 @admin.register(Heroslider)
