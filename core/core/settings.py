@@ -44,7 +44,10 @@ INSTALLED_APPS = [
     'accounts',
     'rest_framework',
     'django_filters',
+<<<<<<< Updated upstream
     'drf_yasg',
+=======
+>>>>>>> Stashed changes
 ]
 
 MIDDLEWARE = [
@@ -137,3 +140,7 @@ AUTH_USER_MODEL = 'accounts.User'
 
 #404 
 # DEBUG_PROPAGATE_EXCEPTIONS = True
+
+REST_FRAMEWORK = {
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend']
+}
