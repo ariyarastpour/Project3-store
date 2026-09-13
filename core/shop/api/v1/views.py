@@ -8,12 +8,13 @@ from rest_framework.filters import SearchFilter, OrderingFilter
 from ...models import Product, Category
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from .paginations import CustomPagination
+from .permissions import IsOwnerOrReadOnly
 
 # products
 class ProductModelViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.filter(status=1)
     serializer_class = ProductSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
     filterset_fields = ["category"]
     search_fields = ["title"]

@@ -37,13 +37,14 @@ INSTALLED_APPS = [
     'website',  
     'django.contrib.humanize',
     #'cart',    
-    #'dashboard 
+    #'dashboard',
     #'order',  
     'review', 
     'shop',    
     'accounts',
     'rest_framework',
     'django_filters',
+    'drf_yasg',
 ]
 
 MIDDLEWARE = [

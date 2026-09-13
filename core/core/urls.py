@@ -21,6 +21,10 @@ from django.conf.urls.static import static
 from django.contrib.sitemaps.views import sitemap
 from website.sitemaps import StaticViewSitemap
 from shop.sitemaps import ProductSitemap
+from rest_framework import permissions
+from drf_yasg.views import get_schema_view
+from drf_yasg import openapi
+
 
 sitemaps = {"static": StaticViewSitemap, "products": ProductSitemap}
 
@@ -37,6 +41,31 @@ urlpatterns = [
         {"sitemaps": sitemaps},
         name="django.contrib.sitemaps.views.sitemap",
     ),
+]
+
+schema_view = get_schema_view(
+    openapi.Info(
+        title="Project Store(shop) API",
+        default_version="v1",
+        description="This is the test documentation for shop!",
+        terms_of_service="https://www.google.com/policies/terms/",
+        contact=openapi.Contact(email="rastpourariya@gmail.com"),
+        license=openapi.License(name="MIT License"),
+    ),
+    public=True,
+    permission_classes=(permissions.IsAuthenticatedOrReadOnly,),
+)
+urlpatterns += [
+    path(
+        "swagger<format>/",
+        schema_view.without_ui(cache_timeout=0),
+        name="schema-json",
+    ),
+    path(
+        "swagger/",
+        schema_view.with_ui("swagger", cache_timeout=0),
+        name="schema-swagger-ui",
+    )
 ]
 
 if settings.DEBUG:
