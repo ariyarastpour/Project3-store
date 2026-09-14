@@ -44,10 +44,8 @@ INSTALLED_APPS = [
     'accounts',
     'rest_framework',
     'django_filters',
-<<<<<<< Updated upstream
     'drf_yasg',
-=======
->>>>>>> Stashed changes
+
 ]
 
 MIDDLEWARE = [
