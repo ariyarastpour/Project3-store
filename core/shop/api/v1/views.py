@@ -21,6 +21,7 @@ class ProductModelViewSet(viewsets.ModelViewSet):
     search_fields = ["title"]
     ordering_fields = ["created_date"]
     pagination_class = CustomPagination
+    lookup_field = 'slug'
 
 
 

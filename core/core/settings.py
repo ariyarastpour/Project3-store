@@ -36,16 +36,17 @@ INSTALLED_APPS = [
     'django.contrib.sitemaps',
     'website',  
     'django.contrib.humanize',
+    'rest_framework',
+    'rest_framework.authtoken',
+    'rest_framework_simplejwt',
+    'django_filters',
+    'drf_yasg',
     #'cart',    
     #'dashboard',
     #'order',  
     'review', 
     'shop',    
     'accounts',
-    'rest_framework',
-    'django_filters',
-    'drf_yasg',
-
 ]
 
 MIDDLEWARE = [
@@ -140,5 +141,13 @@ AUTH_USER_MODEL = 'accounts.User'
 # DEBUG_PROPAGATE_EXCEPTIONS = True
 
 REST_FRAMEWORK = {
-    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend']
+    'DEFAULT_FILTER_BACKENDS': [
+        'django_filters.rest_framework.DjangoFilterBackend'
+    ],
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ],
 }

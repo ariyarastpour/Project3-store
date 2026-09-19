@@ -82,6 +82,7 @@ class DetailViewModel(DetailView):
     template_name = "shop/products-detail.html"
     slug_field = 'slug'
     slug_url_kwarg = 'slug'
+    lookup_field = 'slug'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

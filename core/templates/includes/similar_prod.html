@@ -43,7 +43,7 @@
                   </div>
 
                   <h4 class="card-title">
-                    <a class="text-dark" href="{% url 'shop:detail' similar_prod.id %}">{{similar_prod.title}}</a>
+                    <a class="text-dark" href="{% url 'shop:detail' similar_prod.slug %}">{{similar_prod.title}}</a>
                   </h4>
                   {% if similar_prod.discount_percent %}
                   <p class="card-text text-dark">{{similar_prod.offer|intcomma}} <span class="text-body ms-1"><del>{{similar_prod.price|intcomma}} تومان</del></span></p>

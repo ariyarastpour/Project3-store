@@ -48,8 +48,8 @@ class ProductSerializer(serializers.ModelSerializer):
     def obj_absolute_url(self, obj):
         request = self.context.get("request")
         return reverse(
-            "shop:shop-api-v1:product-detail",
-            kwargs={"pk": obj.pk},
+            "shop:shop-api-v1:products-detail",
+            kwargs={"slug": obj.slug},
             request=request,
         )
 
