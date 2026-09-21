@@ -82,7 +82,6 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     
 
 class ChangePasswordSerializer(serializers.Serializer):
-
     old_password = serializers.CharField(required=True)
     new_password1 = serializers.CharField(required=True)
     new_password2 = serializers.CharField(required=True)
@@ -103,4 +102,4 @@ class ProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Profile
-        fields = ['id', 'email', 'first_name', 'last_name', 'description']
+        fields = ['id', 'email', 'first_name', 'last_name', 'image', 'description']

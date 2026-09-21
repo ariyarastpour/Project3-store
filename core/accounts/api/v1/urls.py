@@ -27,6 +27,9 @@ urlpatterns = [
 
     # Profile
     path('profile/', views.ProfileApiView.as_view(), name='profile'),
+
+    # test email
+    path('activation/test', views.TestEmailView.as_view(), name='test-activation-email')
 ]
 
 

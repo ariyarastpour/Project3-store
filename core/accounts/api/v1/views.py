@@ -6,10 +6,11 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework_simplejwt.views import TokenObtainPairView
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
+from django.core.mail import send_mail
 from ...models import Profile
 User = get_user_model()
 
@@ -67,7 +68,7 @@ class ChangwPasswordApiView(generics.GenericAPIView):
     
     def put(self, request, *args, **kwargs):
         self.object = self.get_object()
-        serializer = self.get_serializer(data = request.data)
+        serializer = self.get_serializer(data= request.data)
         if serializer.is_valid():
             if not self.object.check_password(serializer.data.get("old_password")):
                 return Response({"old_password" : "Wronge password."}, status=status.HTTP_400_BAD_REQUEST)
@@ -75,13 +76,27 @@ class ChangwPasswordApiView(generics.GenericAPIView):
             self.object.save()
             return Response({"details": "password changed successfully"}, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
     
-    
+
 class ProfileApiView(generics.RetrieveUpdateAPIView):
     serializer_class = ProfileSerializer
     queryset = Profile.objects.all()
+    permission_classes = [IsAuthenticatedOrReadOnly]
 
     def get_object(self):
         queryset = self.get_queryset()
         obj = get_object_or_404(queryset, user= self.request.user)
         return obj
+
+
+class TestEmailView(generics.GenericAPIView):
+
+    def get(self, request, *args, **kwargs):
+        send_mail(
+            "Subject here",
+            "Here is the message.",
+            "from@example.com",
+            ["to@example.com"],
+        )
+        return Response("email sent!")
