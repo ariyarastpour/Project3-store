@@ -16,6 +16,10 @@ urlpatterns = [
     # Change password
     path('change-password/', views.ChangwPasswordApiView.as_view(), name='registration'),
 
+    # activation
+    path('activation/', views.CustomAuthToken.as_view(), name='token-login'),
+    path('token/logout/', views.CustomDiscardAuthToken.as_view(), name='token-logout'),
+
     # Login token
     path('token/login/', views.CustomAuthToken.as_view(), name='token-login'),
     path('token/logout/', views.CustomDiscardAuthToken.as_view(), name='token-logout'),
@@ -31,5 +35,3 @@ urlpatterns = [
     # test email
     path('activation/test', views.TestEmailView.as_view(), name='test-activation-email')
 ]
-
-

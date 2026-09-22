@@ -10,7 +10,7 @@ from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnl
 from rest_framework_simplejwt.views import TokenObtainPairView
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
-from django.core.mail import send_mail
+from mail_templated import send_mail
 from ...models import Profile
 User = get_user_model()
 
@@ -93,10 +93,5 @@ class ProfileApiView(generics.RetrieveUpdateAPIView):
 class TestEmailView(generics.GenericAPIView):
 
     def get(self, request, *args, **kwargs):
-        send_mail(
-            "Subject here",
-            "Here is the message.",
-            "from@example.com",
-            ["to@example.com"],
-        )
+        send_mail('email/hello.tpl', {'name': 'self.user.email'}, 'test@admin.com', ['admin@admin.com'])
         return Response("email sent!")
