@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.views.generic import TemplateView
 from django.views.generic.edit import FormView
 from .forms import ContactForm
-from .models import AboutSetting, ContactSetting, PrivacySetting, PrivacySection
+from .models import *
 from django.urls import reverse_lazy
 
 class IndexView(TemplateView):
@@ -47,4 +47,14 @@ class PrivacyView(TemplateView):
             is_active=True
         ).order_by('order')
         
+        return context
+    
+
+class TermsView(TemplateView):    
+    template_name = 'website/terms.html'
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['config'] = TermsConfig.get_solo()
+        context['sections'] = TermsSection.objects.filter(is_active=True)
         return context

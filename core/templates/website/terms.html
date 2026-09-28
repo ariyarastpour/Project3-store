@@ -1,0 +1,269 @@
+{% extends "base.html" %}
+{% load static %}
+{% load website_tags %}
+
+{% block title %}{{ config.page_title|default:"قوانین و مقررات" }} | {{ site_settings.site_name|default:"فروشگاه" }}{% endblock %}
+
+{% block extera-css %}
+<style>
+    .terms-page {
+        font-family: {{ site_settings.font_family|default:"'Vazir', sans-serif" }};
+        color: #1a1a2e;
+    }
+
+    /* ===== هدر ===== */
+    .terms-hero {
+        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        padding: 70px 0 60px;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+    .terms-hero::after {
+        content: '';
+        position: absolute;
+        bottom: -2px;
+        left: 0;
+        right: 0;
+        height: 60px;
+        background: #fff;
+        border-radius: 0 0 50% 50% / 0 0 100% 100%;
+        transform: scaleX(1.5);
+    }
+    .terms-hero h1 {
+        color: #fff;
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 10px;
+        position: relative;
+        z-index: 1;
+    }
+    .terms-hero .subtitle {
+        color: rgba(255,255,255,0.85);
+        font-size: 1.1rem;
+        position: relative;
+        z-index: 1;
+    }
+    .terms-hero .update-badge {
+        display: inline-block;
+        background: rgba(255,255,255,0.15);
+        backdrop-filter: blur(5px);
+        padding: 6px 20px;
+        border-radius: 30px;
+        color: #fff;
+        font-size: 0.85rem;
+        margin-top: 15px;
+        position: relative;
+        z-index: 1;
+        border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    /* ===== کانتینر ===== */
+    .terms-body {
+        max-width: 860px;
+        margin: -30px auto 0;
+        padding: 0 20px 60px;
+        position: relative;
+        z-index: 2;
+    }
+
+    /* ===== کارت‌ها ===== */
+    .terms-card {
+        background: #fff;
+        border-radius: 16px;
+        padding: 32px 35px;
+        margin-bottom: 24px;
+        box-shadow: 0 2px 20px rgba(0,0,0,0.04);
+        border: 1px solid #f0f0f5;
+        transition: box-shadow 0.3s;
+        animation: fadeInUp 0.6s ease forwards;
+    }
+    .terms-card:hover {
+        box-shadow: 0 8px 40px rgba(0,0,0,0.06);
+    }
+
+    @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    .terms-card:nth-child(1) { animation-delay: 0.05s; }
+    .terms-card:nth-child(2) { animation-delay: 0.10s; }
+    .terms-card:nth-child(3) { animation-delay: 0.15s; }
+    .terms-card:nth-child(4) { animation-delay: 0.20s; }
+    .terms-card:nth-child(5) { animation-delay: 0.25s; }
+    .terms-card:nth-child(6) { animation-delay: 0.30s; }
+    .terms-card:nth-child(7) { animation-delay: 0.35s; }
+    .terms-card:nth-child(8) { animation-delay: 0.40s; }
+    .terms-card:nth-child(9) { animation-delay: 0.45s; }
+    .terms-card:nth-child(10){ animation-delay: 0.50s; }
+
+    .terms-card .card-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+        background: #1a1a2e11;
+        color: #1a1a2e;
+        font-size: 1.2rem;
+        margin-left: 12px;
+        flex-shrink: 0;
+    }
+    .terms-card h3 {
+        display: flex;
+        align-items: center;
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: #1a1a2e;
+        margin-bottom: 16px;
+        padding-bottom: 14px;
+        border-bottom: 2px solid #f5f5fa;
+    }
+
+    /* ===== محتوای HTML داخل سکشن ===== */
+    .terms-card .content {
+        color: #4a4a5a;
+        line-height: 2;
+    }
+    .terms-card .content p {
+        margin-bottom: 12px;
+    }
+    .terms-card .content ul,
+    .terms-card .content ol {
+        padding-right: 24px;
+        margin-bottom: 12px;
+    }
+    .terms-card .content li {
+        margin-bottom: 8px;
+    }
+    .terms-card .content strong {
+        color: #1a1a2e;
+    }
+    .terms-card .content a {
+        color: {{ site_settings.primary_color|default:"#377dff" }};
+        text-decoration: none;
+    }
+    .terms-card .content a:hover {
+        text-decoration: underline;
+    }
+
+    /* ===== مقدمه ===== */
+    .terms-intro {
+        background: #f8f8fc;
+        border-color: #eee;
+    }
+    .terms-intro p {
+        text-align: center;
+        color: #666;
+        font-size: 0.95rem;
+        line-height: 2;
+        margin: 0;
+    }
+    .terms-intro i {
+        color: #1a1a2e;
+        margin-left: 6px;
+    }
+
+    /* ===== فوتر ===== */
+    .terms-footer {
+        text-align: center;
+        background: #f8f8fc;
+        border-color: #eee;
+    }
+    .terms-footer p {
+        margin: 0;
+        font-size: 0.9rem;
+        color: #888;
+    }
+    .terms-footer p + p {
+        margin-top: 4px;
+        font-size: 0.85rem;
+        color: #aaa;
+    }
+    .terms-footer i {
+        color: #1a1a2e;
+    }
+
+    /* ===== ریسپانسیو ===== */
+    @media (max-width: 640px) {
+        .terms-hero { padding: 50px 0 40px; }
+        .terms-hero h1 { font-size: 1.8rem; }
+        .terms-body { padding: 0 14px 40px; margin-top: -20px; }
+        .terms-card { padding: 22px 18px; }
+        .terms-card h3 { font-size: 1.05rem; }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="terms-page">
+
+    <!-- ===== هدر ===== -->
+    <section class="terms-hero">
+        <div class="container">
+            <h1>{{ config.page_title|default:"قوانین و مقررات" }}</h1>
+            {% if config.page_subtitle %}
+                <p class="subtitle">{{ config.page_subtitle }}</p>
+            {% endif %}
+            <span class="update-badge">
+                <i class="far fa-calendar-alt"></i>
+                آخرین به‌روزرسانی: {{ config.last_update|date:"j F Y" }}
+            </span>
+        </div>
+    </section>
+
+    <!-- ===== محتوا ===== -->
+    <div class="terms-body">
+
+        <!-- ===== مقدمه ===== -->
+        {% if config.introduction_text %}
+            <div class="terms-card terms-intro">
+                <p>
+                    <i class="fas fa-info-circle"></i>
+                    {{ config.introduction_text }}
+                </p>
+            </div>
+        {% endif %}
+
+        <!-- ===== سکشن‌ها ===== -->
+        {% for section in sections %}
+            <div class="terms-card" id="section-{{ section.id }}">
+                <h3>
+                    <span class="card-icon">
+                        {% if section.icon %}
+                            <i class="fas {{ section.icon }}"></i>
+                        {% else %}
+                            <i class="fas fa-file-contract"></i>
+                        {% endif %}
+                    </span>
+                    {{ section.title }}
+                </h3>
+
+                <div class="content">
+                    {{ section.content|safe }}
+                </div>
+            </div>
+        {% empty %}
+            <div class="terms-card">
+                <p style="text-align:center; color:#999;">
+                    هنوز سکشنی برای این صفحه ثبت نشده است.
+                </p>
+            </div>
+        {% endfor %}
+
+        <!-- ===== تغییرات ===== -->
+        <div class="terms-card terms-footer">
+            <p>
+                <i class="fas fa-history"></i>
+                آخرین به‌روزرسانی: <strong>{{ config.last_update|date:"j F Y" }}</strong>
+            </p>
+            <p>
+                این قوانین ممکن است به‌روزرسانی شود. تغییرات مهم از طریق ایمیل یا اعلان در سایت اطلاع‌رسانی می‌شود.
+            </p>
+        </div>
+
+    </div>
+
+</div>
+{% endblock content %}

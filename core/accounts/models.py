@@ -3,6 +3,12 @@ from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseU
 from django.utils.translation import gettext_lazy as _
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django.conf import settings
+from django.utils import timezone
+from datetime import timedelta
+import uuid
+import random
+
 
 class UserManager(BaseUserManager):
     def create_user(self, email, password, **extra_fields):
@@ -24,6 +30,7 @@ class UserManager(BaseUserManager):
         if extra_fields.get('is_superuser') is not True:
             raise ValueError(_("گزینه ی is_superuser را فعال کنید!"))
         return self.create_user(email, password, **extra_fields)
+    
 
 class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(max_length=200, unique=True)
@@ -57,6 +64,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     def __str__(self):
         return self.email
     
+
 class Profile(models.Model):
     user = models.ForeignKey(User,on_delete=models.CASCADE)
     first_name = models.CharField(max_length=200)
@@ -72,7 +80,57 @@ class Profile(models.Model):
     def get_fullname(self):
         return f"{self.first_name} {self.last_name}"
     
+
 @receiver(post_save,sender=User)
 def Save_profile(sender, instance, created, **kwargs):
     if created:
         Profile.objects.create(user=instance)
+
+def generate_otp():
+    """تولید کد ۶ رقمی تصادفی"""
+    return f"{random.randint(0, 999999):06d}"
+
+
+class ActivationToken(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='activation_tokens')
+    token = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
+    created_date = models.DateTimeField(auto_now_add=True)
+    otp_code = models.CharField(
+        max_length=6,
+        default=generate_otp,
+    )
+    expires_at = models.DateTimeField()
+
+    def save(self, *args, **kwargs):
+        if not self.expires_at:
+            self.expires_at = timezone.now() + timedelta(hours=24)
+        super().save(*args, **kwargs)
+
+    def is_expired(self):
+        return timezone.now() > self.expires_at
+    
+    def __str__(self):
+        return f"{self.user.email} — {self.token}"
+    
+
+class PasswordResetToken(models.Model):
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='password_reset_tokens',
+    )
+    token = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
+    otp_code = models.CharField(max_length=6, default=generate_otp)
+    created_date = models.DateTimeField(auto_now_add=True)
+    expires_at = models.DateTimeField()
+
+    def save(self, *args, **kwargs):
+        if not self.expires_at:
+            self.expires_at = timezone.now() + timedelta(minutes=15)
+        super().save(*args, **kwargs)
+
+    def is_expired(self):
+        return timezone.now() > self.expires_at
+
+    def __str__(self):
+        return f"Reset token for {self.user.email}"

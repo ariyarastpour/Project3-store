@@ -1,4 +1,5 @@
 from django.db import models
+from solo.models import SingletonModel
 from django.core.validators import FileExtensionValidator
 from django.core.exceptions import ValidationError
 
@@ -478,11 +479,7 @@ class ContactSetting(models.Model):
 
 # PrivacyPolicy
 class PrivacySection(models.Model):
-    """
-    سکشن‌های داینامیک صفحه حریم خصوصی
-    کاربر می‌تواند سکشن‌ها را اضافه، ویرایش و حذف کند
-    """
-    
+
     SECTION_TYPES = (
         ('introduction', 'مقدمه'),
         ('collect_info', 'اطلاعات جمع‌آوری شده'),
@@ -494,7 +491,6 @@ class PrivacySection(models.Model):
         ('custom', 'سکشن دلخواه'),
     )
     
-    # ===== فیلدهای اصلی =====
     section_type = models.CharField(
         max_length=50,
         choices=SECTION_TYPES,
@@ -512,7 +508,7 @@ class PrivacySection(models.Model):
         max_length=50,
         blank=True,
         verbose_name="آیکون",
-        help_text="مثلاً: fa-shield-alt, fa-info-circle, fa-database"
+        help_text="مثلاً: bi-pen"
     )
     
     description = models.TextField(
@@ -521,7 +517,6 @@ class PrivacySection(models.Model):
         help_text="توضیح کوتاه بالای لیست آیتم‌ها (اختیاری)"
     )
     
-    # ===== وضعیت =====
     is_active = models.BooleanField(
         default=True,
         verbose_name="فعال"
@@ -532,7 +527,6 @@ class PrivacySection(models.Model):
         verbose_name="ترتیب نمایش"
     )
     
-    # ===== اطلاعات مدیریتی =====
     created_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
 
@@ -543,24 +537,19 @@ class PrivacySection(models.Model):
         return f"{self.title} ({'فعال' if self.is_active else 'غیرفعال'})"
     
     def get_icon_html(self):
-        """دریافت آیکون به صورت HTML"""
         if self.icon:
             return f'<i class="fas {self.icon}"></i>'
         return ''
     
     def get_items_list(self):
-        """دریافت آیتم‌ها به صورت لیست"""
         if isinstance(self.items, list):
             return self.items
         return []
 
 
 class PrivacySetting(models.Model):
-    """
-    تنظیمات اصلی صفحه حریم خصوصی
-    """
+
     
-    # ===== اطلاعات عمومی =====
     page_title = models.CharField(
         max_length=200,
         default="سیاست حفظ حریم خصوصی",
@@ -575,10 +564,10 @@ class PrivacySetting(models.Model):
     
     introduction_text = models.TextField(
         verbose_name="متن مقدمه",
+        help_text="می‌توانید HTML یا Markdown بنویسید",
         default="ما به حریم خصوصی کاربران خود احترام می‌گذاریم. این سند نحوه جمع‌آوری، استفاده و محافظت از اطلاعات شما را شرح می‌دهد. استفاده از سایت ما به معنای پذیرش این سیاست است."
     )
     
-    # ===== آخرین به‌روزرسانی =====
     last_update = models.DateField(
         auto_now=True,
         verbose_name="آخرین به‌روزرسانی"
@@ -595,18 +584,12 @@ class PrivacySetting(models.Model):
 
 # Preloader
 class LoaderSetting(models.Model):
-    """
-    مدل تنظیمات لایه‌ی بارگذاری (پرلودر) سایت
-    قابل ویرایش در پنل ادمین
-    """
     
-    # ===== وضعیت فعال/غیرفعال =====
     is_active = models.BooleanField(
         default=True,
         verbose_name="فعال بودن لودر"
     )
     
-    # ===== لوگو =====
     logo = models.FileField(
         upload_to='site/logo/',
         blank=True,
@@ -615,7 +598,6 @@ class LoaderSetting(models.Model):
         help_text="تصویر لوگو (PNG یا SVG ترجیح داده می‌شود)"
     )
 
-    # ===== محتوای متنی =====
     loading_text = models.CharField(
         max_length=100,
         default="در حال بارگذاری",
@@ -629,7 +611,6 @@ class LoaderSetting(models.Model):
         help_text="مثلاً: #333333 یا rgb(51, 51, 51)"
     )
     
-    # ===== پس‌زمینه =====
     background_color = models.CharField(
         max_length=20,
         default="#ffffff",
@@ -678,7 +659,6 @@ class LoaderSetting(models.Model):
         verbose_name="اندازه دایره‌ی چرخان (پیکسل)"
     )
     
-    # ===== نوار پیشرفت (Progress Bar) =====
     show_progress_bar = models.BooleanField(
         default=False,
         verbose_name="نمایش نوار پیشرفت"
@@ -690,7 +670,6 @@ class LoaderSetting(models.Model):
         verbose_name="رنگ نوار پیشرفت"
     )
     
-    # ===== زمان نمایش =====
     minimum_display_time = models.PositiveIntegerField(
         default=0,
         verbose_name="حداقل زمان نمایش (میلی‌ثانیه)",
@@ -705,14 +684,12 @@ class LoaderSetting(models.Model):
         return f"تنظیمات لودر ({'فعال' if self.is_active else 'غیرفعال'})"
     
     def save(self, *args, **kwargs):
-        # اطمینان از اینکه فقط یک رکورد در دیتابیس وجود دارد
         if not self.pk and LoaderSetting.objects.exists():
             raise ValueError("تنها یک نمونه از تنظیمات لودر می‌تواند وجود داشته باشد!")
         super().save(*args, **kwargs)
 
     @classmethod
     def get_settings(cls):
-        """دریافت تنظیمات (اگر وجود نداشت، یک نمونه پیش‌فرض ایجاد می‌کند)"""
         settings, created = cls.objects.get_or_create(
             id=1,
             defaults={
@@ -723,3 +700,78 @@ class LoaderSetting(models.Model):
             }
         )
         return settings
+    
+# Terms
+class TermsSection(models.Model):
+    
+    SECTION_TYPES = (
+        ('acceptance', 'پذیرش قوانین'),
+        ('account', 'حساب کاربری'),
+        ('orders', 'سفارش و پرداخت'),
+        ('shipping', 'ارسال و تحویل'),
+        ('returns', 'مرجوعی و بازگشت'),
+        ('warranty', 'گارانتی'),
+        ('prohibited', 'رفتارهای ممنوعه'),
+        ('intellectual', 'مالکیت معنوی'),
+        ('liability', 'محدودیت مسئولیت'),
+        ('changes', 'تغییر قوانین'),
+        ('contact', 'تماس با ما'),
+        ('custom', 'سکشن دلخواه'),
+    )
+    
+    section_type = models.CharField(
+        max_length=50,
+        choices=SECTION_TYPES,
+        default='custom',
+        verbose_name="نوع سکشن"
+    )
+    
+    title = models.CharField(
+        max_length=200,
+        verbose_name="عنوان سکشن"
+    )
+    
+    icon = models.CharField(
+        max_length=50,
+        blank=True,
+        verbose_name="آیکون",
+        help_text="مثلاً: bi-pen"
+    )
+    
+    content = models.TextField(
+        verbose_name="محتوا",
+        help_text="می‌توانید HTML یا Markdown بنویسید"
+    )
+    
+    is_active = models.BooleanField(
+        default=True,
+        verbose_name="فعال"
+    )
+    
+    order = models.PositiveIntegerField(
+        default=0,
+        verbose_name="ترتیب نمایش"
+    )
+    
+    created_date = models.DateTimeField(auto_now_add=True)
+    updated_date = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['order']
+ 
+
+    def __str__(self):
+        return self.title
+    
+
+class TermsConfig(SingletonModel):
+    
+    page_title = models.CharField(max_length=200, default="قوانین و مقررات")
+    page_subtitle = models.CharField(max_length=200, blank=True)
+    introduction_text = models.TextField(
+        default="با استفاده از خدمات ما، شما با قوانین زیر موافقت می‌کنید..."
+    )
+    last_update = models.DateField(auto_now=True)
+
+    def __str__(self):
+        return "تنظیمات قوانین"

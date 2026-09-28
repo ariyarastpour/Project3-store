@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'django.contrib.sitemaps',
     'website',  
+    'solo',
     'django.contrib.humanize',
     'rest_framework',
     'rest_framework.authtoken',
@@ -135,14 +136,12 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Email settings
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp4dev'
-EMAIL_PORT = 25
-
-# Optional SMTP authentication information for EMAIL_HOST.
-EMAIL_HOST_USER = ''
-EMAIL_HOST_PASSWORD = ''
-EMAIL_USE_TLS = False
-
+DEFAULT_FROM_EMAIL = 'rastpourariya@gmail.com'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'rastpourariya@gmail.com'
+EMAIL_HOST_PASSWORD = 'kifxwgxtiyifrgeq'
+EMAIL_USE_TLS = True
 
 # Authentication
 AUTH_USER_MODEL = 'accounts.User'

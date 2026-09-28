@@ -1,0 +1,194 @@
+{% if user.is_authenticated and not user.is_verified %}
+<script>
+(function() {
+    // ═══════════════════════════════════════════════════
+    //  ۱. دریافت CSRF Token
+    // ═══════════════════════════════════════════════════
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    const csrftoken = getCookie('csrftoken');
+
+    // ═══════════════════════════════════════════════════
+    //  ۲. عناصر DOM
+    // ═══════════════════════════════════════════════════
+    const emailSection = document.getElementById('verify-email-section');
+    const codeSection  = document.getElementById('verify-code-section');
+
+    // اگه سکشن‌ها وجود ندارن، خارج شو
+    if (!emailSection && !codeSection) return;
+
+    // ═══════════════════════════════════════════════════
+    //  ۳. ارسال کد تایید
+    // ═══════════════════════════════════════════════════
+    const sendForm = document.getElementById('send-verify-form');
+    if (sendForm) {
+        sendForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const btn = sendForm.querySelector('button[type="submit"]');
+            const originalText = btn.textContent;
+            btn.disabled = true;
+            btn.textContent = 'در حال ارسال...';
+
+            try {
+                const res = await fetch('/accounts/send-verification/', {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': csrftoken,
+                        'Content-Type': 'application/json',
+                    },
+                });
+                const data = await res.json();
+
+                if (res.ok) {
+                    // ⭐ toggle بین دو سکشن
+                    if (emailSection) emailSection.style.display = 'none';
+                    if (codeSection) {
+                        codeSection.style.display = 'block';
+                        const codeInput = document.getElementById('verifyCode');
+                        if (codeInput) codeInput.focus();
+                    }
+                } else {
+                    showMessage(data.detail || 'خطا در ارسال کد', 'danger');
+                    btn.disabled = false;
+                    btn.textContent = originalText;
+                }
+            } catch (err) {
+                showMessage('خطای شبکه: ' + err.message, 'danger');
+                btn.disabled = false;
+                btn.textContent = originalText;
+            }
+        });
+    }
+
+    // ═══════════════════════════════════════════════════
+    //  ۴. تایید کد
+    // ═══════════════════════════════════════════════════
+    const verifyForm = document.getElementById('verify-code-form');
+    if (verifyForm) {
+        verifyForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const codeInput = document.getElementById('verifyCode');
+            const code = codeInput.value.trim();
+            const btn = verifyForm.querySelector('button[type="submit"]');
+            const originalText = btn.textContent;
+
+            if (code.length !== 6) {
+                showMessage('کد باید ۶ رقم باشد.', 'danger');
+                return;
+            }
+
+            btn.disabled = true;
+            btn.textContent = 'در حال تایید...';
+
+            try {
+                const res = await fetch('/accounts/verify-email/', {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': csrftoken,
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: 'code=' + encodeURIComponent(code),
+                });
+                const data = await res.json();
+
+                if (res.ok) {
+                    showMessage('✅ ' + data.detail, 'success');
+                    setTimeout(() => {
+                        if (codeSection) codeSection.style.display = 'none';
+                        if (emailSection) emailSection.style.display = 'none';
+                    }, 1500);
+                } else {
+                    showMessage(data.detail || 'خطا', 'danger');
+                    btn.disabled = false;
+                    btn.textContent = originalText;
+                }
+            } catch (err) {
+                showMessage('خطای شبکه: ' + err.message, 'danger');
+                btn.disabled = false;
+                btn.textContent = originalText;
+            }
+        });
+    }
+
+    // ═══════════════════════════════════════════════════
+    //  ۵. Auto-submit وقتی ۶ رقم کامل شد
+    // ═══════════════════════════════════════════════════
+    const codeInput = document.getElementById('verifyCode');
+    if (codeInput) {
+        codeInput.addEventListener('input', (e) => {
+            if (e.target.value.length === 6) {
+                document.getElementById('verify-code-form')?.requestSubmit();
+            }
+        });
+    }
+
+    // ═══════════════════════════════════════════════════
+    //  ۶. ارسال دوباره کد
+    // ═══════════════════════════════════════════════════
+    const resendBtn = document.getElementById('resend-verify-btn');
+    if (resendBtn) {
+        resendBtn.addEventListener('click', async (e) => {
+            e.preventDefault();
+            resendBtn.disabled = true;
+            resendBtn.textContent = 'در حال ارسال...';
+
+            try {
+                const res = await fetch('/accounts/send-verification/', {
+                    method: 'POST',
+                    headers: { 'X-CSRFToken': csrftoken },
+                });
+                const data = await res.json();
+                showMessage(data.detail || 'کد ارسال شد.', 'info');
+            } catch (err) {
+                showMessage('خطای شبکه: ' + err.message, 'danger');
+            } finally {
+                resendBtn.disabled = false;
+                resendBtn.textContent = 'ارسال دوباره کد';
+            }
+        });
+    }
+
+    // ═══════════════════════════════════════════════════
+    //  ۷. بازگشت به فرم ایمیل
+    // ═══════════════════════════════════════════════════
+    const backBtn = document.getElementById('back-to-email-btn');
+    if (backBtn) {
+        backBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (codeSection) codeSection.style.display = 'none';
+            if (emailSection) emailSection.style.display = 'block';
+
+            const sendBtn = document.querySelector('#send-verify-form button[type="submit"]');
+            if (sendBtn) {
+                sendBtn.disabled = false;
+                sendBtn.textContent = 'ارسال کد تایید';
+            }
+        });
+    }
+
+    // ═══════════════════════════════════════════════════
+    //  ۸. تابع کمکی نمایش پیام
+    // ═══════════════════════════════════════════════════
+    function showMessage(text, type) {
+        const msg = document.getElementById('verify-message');
+        if (!msg) return;
+        msg.innerHTML = '<div class="alert alert-' + (type || 'info') + '">' + text + '</div>';
+    }
+
+})();
+</script>
+{% endif %}

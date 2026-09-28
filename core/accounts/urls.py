@@ -2,7 +2,6 @@ from django.urls import path, include
 from . import views
 from .forms import SetPasswordForm
 from django.contrib.auth import views as auth_views
-#from .forms import SetPasswordForm
 
 
 urlpatterns = [
@@ -36,4 +35,9 @@ urlpatterns = [
         ),
         name="password_reset_complete",
     ),
+
+    # Verification
+    path('send-verification/', views.SendVerificationView.as_view(), name='send-verification'),
+    path('verify-code/', views.VerifyCodePageView.as_view(), name='verify-code'),
+    path('verify-email/', views.VerifyEmailView.as_view(), name='verify-email'),
 ]

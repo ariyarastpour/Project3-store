@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}تایید ایمیل{% endblock %}
+
+{% block content %}
+<div class="container content-space-2">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+            
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-5 text-center">
+                    
+                    <div style="font-size: 56px; margin-bottom: 16px;">📧</div>
+                    
+                    <h2 class="mb-3">تایید ایمیل</h2>
+                    
+                    <p class="text-muted mb-4">
+                        کد ۶ رقمی به ایمیل زیر فرستادیم:
+                    </p>
+                    
+                    <div class="alert alert-info mb-4">
+                        <strong>{{ user.email }}</strong>
+                    </div>
+                    
+                    <!-- پیام‌ها -->
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+                        {% endfor %}
+                    {% endif %}
+                    
+                    <!-- ⭐ فرم POST معمولی -->
+                    <form method="post" action="{% url 'verify-email' %}">
+                        {% csrf_token %}
+                        
+                        <div class="mb-3">
+                            <input
+                                type="text"
+                                name="code"
+                                class="form-control form-control-lg text-center"
+                                maxlength="6"
+                                minlength="6"
+                                inputmode="numeric"
+                                pattern="[0-9]{6}"
+                                autocomplete="one-time-code"
+                                autofocus
+                                required
+                                placeholder="- - - - - -"
+                                style="letter-spacing: 12px; direction: ltr; font-size: 24px; padding: 16px;"
+                            />
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary btn-lg w-100 rounded-pill">
+                            تایید ایمیل
+                        </button>
+                    </form>
+                    
+                    <hr class="my-4">
+                    
+                    <!-- ارسال دوباره -->
+                    <form method="post" action="{% url 'send-verification' %}">
+                        {% csrf_token %}
+                        <p class="text-muted small mb-2">کد را دریافت نکردی؟</p>
+                        <button type="submit" class="btn btn-outline-primary btn-sm rounded-pill">
+                            ارسال دوباره کد
+                        </button>
+                    </form>
+                    
+                </div>
+            </div>
+            
+            <div class="text-center mt-4">
+                <a href="{% url 'website:home' %}" class="text-muted small">
+                    → بازگشت به صفحه اصلی
+                </a>
+            </div>
+            
+        </div>
+    </div>
+</div>
+{% endblock %}

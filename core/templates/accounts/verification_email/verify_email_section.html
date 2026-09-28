@@ -1,0 +1,42 @@
+{% if user.is_authenticated and not user.is_verified %}
+<div class="bg-light" id="verify-email-section">
+  <div class="container content-space-2">
+    <div class="w-md-75 w-lg-50 text-center mx-md-auto">
+      <div class="row justify-content-lg-between">
+        
+        <div class="mb-5">
+          <h2>ایمیل خود را تایید کنید</h2>
+          <p class="text-muted">
+            برای استفاده کامل از امکانات، لطفاً ایمیل خود را تایید کنید.
+          </p>
+        </div>
+
+        <form method="post" action="{% url 'send-verification' %}">
+            {% csrf_token %}
+            <div class="input-card input-card-pill input-card-sm border mb-3">
+                <div class="input-card-form">
+                    <label for="verifyEmail" class="form-label visually-hidden">ایمیل</label>
+                    <input
+                      type="email"
+                      class="form-control form-control-lg"
+                      id="verifyEmail"
+                      value="{{ user.email }}"
+                      readonly
+                    />
+                </div>
+                <button type="submit" class="btn btn-primary btn-lg rounded-pill">
+                  ارسال کد تایید
+                </button>
+            </div>
+        </form>
+        
+        <p class="small">
+            اگر ایمیل را دریافت نکردید، پوشه اسپم را هم بررسی کنید.
+            <a href="{% url 'website:privacy' %}">سیاست حفظ حریم خصوصی</a> ما را بخوانید.
+        </p>
+
+      </div>
+    </div>
+  </div>
+</div>
+{% endif %}

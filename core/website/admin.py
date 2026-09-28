@@ -2,6 +2,8 @@
 
 from django.contrib import admin
 from django import forms
+from solo.admin import SingletonModelAdmin
+from .models import TermsConfig, TermsSection
 from django.utils.html import format_html
 from django.core.exceptions import ValidationError
 from django.utils.timezone import now
@@ -336,3 +338,35 @@ class LoaderSettingsAdmin(admin.ModelAdmin):
         if LoaderSetting.objects.exists():
             return False
         return True
+
+
+@admin.register(TermsConfig)
+class TermsConfigAdmin(BaseSingletonAdmin):
+    list_display = ('page_title', 'last_update')
+    search_fields = ('page_title', 'introduction_text')
+    
+    fieldsets = (
+        ('اطلاعات صفحه', {
+            'fields': ('page_title', 'page_subtitle', 'introduction_text')
+        }),
+    )
+
+
+@admin.register(TermsSection)
+class TermsSectionAdmin(admin.ModelAdmin):
+    list_display = ['title', 'section_type', 'order', 'is_active', 'updated_date']
+    list_filter = ['section_type', 'is_active']
+    search_fields = ['title', 'content']
+    list_editable = ['order', 'is_active']
+    
+    fieldsets = (
+        ('اطلاعات اصلی', {
+            'fields': ('section_type', 'title', 'icon')
+        }),
+        ('محتوا', {
+            'fields': ('content',)
+        }),
+        ('تنظیمات', {
+            'fields': ('is_active', 'order')
+        }),
+    )
