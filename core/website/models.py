@@ -369,27 +369,134 @@ class BrandLogo(models.Model):
 
     def __str__(self):
         return self.name
-    
 
-#About.html
+
+# About.html
 class AboutSetting(models.Model):
-    about_title = models.CharField(max_length=200,verbose_name="موضوع صفحه درباره ما",null=True)
+    about_title = models.CharField(
+        max_length=200,
+        verbose_name="عنوان صفحه",
+        default="درباره ما",
+        blank=True
+    )
+    about_subtitle = models.CharField(
+        max_length=300,
+        blank=True,
+        verbose_name="زیرعنوان"
+    )
     about_content = models.TextField(
-        verbose_name="متن صفحه درباره ما",
-        default='شرکت ما با سال‌ها تجربه در زمینه فروش آنلاین، همواره تلاش کرده است بهترین خدمات را به مشتریان خود ارائه دهد.ما با ارائه محصولات باکیفیت و خدمات پس از فروش عالی، اعتماد شما را ارج می‌نهیم'
+        verbose_name="متن معرفی",
+        default='شرکت ما با سال‌ها تجربه در زمینه فروش آنلاین...',
+        blank=True
+    )
+
+    icon = models.CharField(
+        max_length=50,
+        blank=True,
+        default='info-circle',
+        verbose_name="آیکون"
+    )
+
+    info_title = models.CharField(
+        max_length=300,
+        blank=True,
+        default="ابزارها باید با کاربر سازگار شوند، نه برعکس.",
+        verbose_name="عنوان بخش اطلاعات"
+    )
+    info_content = models.TextField(
+        blank=True,
+        default="از سال ۱۳۸۵، ما به کسب‌وکارهای مختلف کمک کرده‌ایم...",
+        verbose_name="محتوای بخش اطلاعات"
+    )
+
+    gallery = models.JSONField(
+        default=list,
+        blank=True,
+        verbose_name="گالری تصاویر",
+        help_text='لیستی از آدرس تصاویر: ["/media/about/1.jpg", ...]'
+    )
+
+    stat_1_number = models.CharField(
+        max_length=50,
+        blank=True,
+        default="7",
+        verbose_name="آمار ۱ — عدد",
+        help_text="مثلاً: 7 یا 3.5k+ یا 85%"
+    )
+    stat_1_label = models.CharField(
+        max_length=100,
+        blank=True,
+        default="سال در تجارت",
+        verbose_name="آمار ۱ — برچسب"
+    )
+
+    stat_2_number = models.CharField(
+        max_length=50,
+        blank=True,
+        default="3.5k+",
+        verbose_name="آمار ۲ — عدد"
+    )
+    stat_2_label = models.CharField(
+        max_length=100,
+        blank=True,
+        default="نسخه فروخته شده",
+        verbose_name="آمار ۲ — برچسب"
+    )
+
+    stat_3_number = models.CharField(
+        max_length=50,
+        blank=True,
+        default="85%",
+        verbose_name="آمار ۳ — عدد"
+    )
+    stat_3_label = models.CharField(
+        max_length=100,
+        blank=True,
+        default="مشتریان خوشحال",
+        verbose_name="آمار ۳ — برچسب"
+    )
+
+    stat_4_number = models.CharField(
+        max_length=50,
+        blank=True,
+        default="24/7",
+        verbose_name="آمار ۴ — عدد"
+    )
+    stat_4_label = models.CharField(
+        max_length=100,
+        blank=True,
+        default="پشتیبانی",
+        verbose_name="آمار ۴ — برچسب"
+    )
+
+    meta_description = models.CharField(
+        max_length=160,
+        blank=True,
+        verbose_name="توضیحات متا"
     )
 
     def __str__(self):
         return "اطلاعات صفحه درباره ما"
-    
-    def get_current_year(self):
-        from django.utils import timezone
-        return timezone.now().year
-    
+
     def save(self, *args, **kwargs):
         if not self.pk and AboutSetting.objects.exists():
-            raise ValidationError("⚠️ تنها یک رکورد برای اطلاعات تماس مجاز است!")
+            raise ValidationError("⚠️ تنها یک رکورد برای اطلاعات درباره ما مجاز است!")
         super().save(*args, **kwargs)
+
+    def get_gallery(self):
+        if isinstance(self.gallery, list):
+            return self.gallery
+        return []
+
+    def get_stats(self):
+        """برگرداندن آمار به صورت لیست (فقط اون‌هایی که عدد یا لیبل دارن)"""
+        stats = []
+        for i in range(1, 5):
+            number = getattr(self, f'stat_{i}_number', '').strip()
+            label = getattr(self, f'stat_{i}_label', '').strip()
+            if number or label:
+                stats.append({'number': number, 'label': label})
+        return stats
 
 class TeamMember(models.Model):
     name = models.CharField(max_length=200, verbose_name="نام و نام خانوادگی")
@@ -432,6 +539,13 @@ class ContactMessage(models.Model):
     
 
 class ContactSetting(models.Model):
+    icon = models.CharField(
+        max_length=50,
+        blank=True,
+        verbose_name="آیکون",
+        help_text="مثلاً: bi-pen"
+    )
+    
     phone = models.CharField(
         max_length=20,
         blank=True,

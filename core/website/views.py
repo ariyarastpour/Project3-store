@@ -10,8 +10,12 @@ class IndexView(TemplateView):
 
 
 class AboutView(TemplateView):
-    model = AboutSetting
     template_name = "website/about.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['aboutsetting'] = AboutSetting.objects.first()
+        return context
 
 
 class ContactView(FormView):
@@ -26,6 +30,11 @@ class ContactView(FormView):
             initial['email'] = self.request.user.email
 
         return initial
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['contactsetting'] = ContactSetting.objects.first()
+        return context
 
     def form_valid(self, form):
         form.save()

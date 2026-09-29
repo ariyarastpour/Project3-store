@@ -36,8 +36,8 @@ urlpatterns = [
     ),
 
     # ─── Reset password ───
-    path('reset_password/', views.PasswordResetRequestApiView.as_view(), name='reset-password'),
-    path('reset_password/confirm/', views.PasswordResetConfirmApiView.as_view(), name='reset-password-confirm'),
+    path('reset-password/', views.PasswordResetRequestApiView.as_view(), name='reset-password'),
+    path('reset-password/confirm/', views.PasswordResetConfirmApiView.as_view(), name='reset-password-confirm'),
 
     # ─── Token login ───
     path('token/login/', views.CustomAuthToken.as_view(), name='token-login'),

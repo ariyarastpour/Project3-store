@@ -5,10 +5,8 @@ from django.urls import reverse
 
 def send_password_reset_email(user, token_obj, request):
 
-    reset_path = reverse(
-        'accounts-api-v1:password-reset-confirm',
-    )
-
+    reset_path = reverse('accounts-api-v1:reset-password-confirm')
+    
     reset_link = request.build_absolute_uri(
         f"{reset_path}?token={token_obj.token}"
     )

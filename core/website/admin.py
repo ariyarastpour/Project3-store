@@ -94,6 +94,33 @@ class SiteSettingAdmin(BaseSingletonAdmin):
 class AboutSettingAdmin(BaseSingletonAdmin):
     list_display = ('about_title',)
     search_fields = ('about_title', 'about_content')
+    
+    fieldsets = (
+        ('اطلاعات اصلی', {
+            'fields': ('about_title', 'about_subtitle', 'about_content', 'icon')
+        }),
+        ('بخش اطلاعات', {
+            'fields': ('info_title', 'info_content'),
+            'classes': ('collapse',)
+        }),
+        ('گالری', {
+            'fields': ('gallery',),
+            'description': 'آدرس تصاویر به صورت JSON. مثال: ["/media/about/1.jpg", "/media/about/2.jpg"]'
+        }),
+        ('آمارها', {
+            'fields': (
+                ('stat_1_number', 'stat_1_label'),
+                ('stat_2_number', 'stat_2_label'),
+                ('stat_3_number', 'stat_3_label'),
+                ('stat_4_number', 'stat_4_label'),
+            ),
+            'description': 'حداکثر ۴ آمار. اگر می‌خواهید کمتر نمایش دهید، فیلدها را خالی بگذارید.'
+        }),
+        ('SEO', {
+            'fields': ('meta_description',),
+            'classes': ('collapse',)
+        }),
+    )
 
 
 # ============================================================
@@ -339,6 +366,9 @@ class LoaderSettingsAdmin(admin.ModelAdmin):
             return False
         return True
 
+# ============================================================
+# ===== 15. ادمین Terms =============================
+# ============================================================
 
 @admin.register(TermsConfig)
 class TermsConfigAdmin(BaseSingletonAdmin):

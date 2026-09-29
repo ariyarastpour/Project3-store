@@ -3,227 +3,448 @@
 
 {% block title %}{{ contactsetting.contact_title|default:"تماس با ما" }} | {{ site_settings.site_name|default:"فروشگاه" }}{% endblock %}
 
+{% block extera-css %}
+<style>
+    /* ===== Hero ===== */
+    .contact-hero {
+        background: linear-gradient(135deg, {{ site_settings.primary_color|default:"#377DFF" }} 0%, {{ site_settings.primary_color|default:"#377DFF" }}cc 100%);
+        padding: 80px 0 100px;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+    .contact-hero::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -10%;
+        width: 500px;
+        height: 500px;
+        background: rgba(255,255,255,0.05);
+        border-radius: 50%;
+    }
+    .contact-hero::after {
+        content: '';
+        position: absolute;
+        bottom: -2px;
+        left: 0;
+        right: 0;
+        height: 60px;
+        background: #fff;
+        border-radius: 0 0 50% 50% / 0 0 100% 100%;
+        transform: scaleX(1.5);
+    }
+    .contact-hero h1 {
+        color: #fff;
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 12px;
+        position: relative;
+        z-index: 1;
+    }
+    .contact-hero p {
+        color: rgba(255,255,255,0.9);
+        font-size: 1.05rem;
+        max-width: 600px;
+        margin: 0 auto;
+        position: relative;
+        z-index: 1;
+        line-height: 1.9;
+    }
+    .contact-hero .hero-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 70px;
+        height: 70px;
+        background: rgba(255,255,255,0.15);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        margin-bottom: 20px;
+        position: relative;
+        z-index: 1;
+        border: 1px solid rgba(255,255,255,0.2);
+    }
+    .contact-hero .hero-icon i {
+        font-size: 2rem;
+        color: #fff;
+    }
+
+    /* ===== Contact Info Cards ===== */
+    .contact-info-section {
+        max-width: 1100px;
+        margin: -50px auto 0;
+        padding: 0 20px 60px;
+        position: relative;
+        z-index: 2;
+    }
+    .contact-info-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 20px;
+    }
+    .contact-info-card {
+        background: #fff;
+        border-radius: 18px;
+        padding: 28px 24px;
+        text-align: center;
+        box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+        border: 1px solid #f0f0f5;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        color: inherit;
+        display: block;
+        height: 100%;
+    }
+    .contact-info-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 12px 40px rgba(0,0,0,0.1);
+        border-color: {{ site_settings.primary_color|default:"#377DFF" }}33;
+    }
+    .contact-info-card .info-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 60px;
+        height: 60px;
+        border-radius: 16px;
+        background: {{ site_settings.primary_color|default:"#377DFF" }}11;
+        color: {{ site_settings.primary_color|default:"#377DFF" }};
+        font-size: 1.6rem;
+        margin-bottom: 16px;
+        transition: all 0.3s;
+    }
+    .contact-info-card:hover .info-icon {
+        background: {{ site_settings.primary_color|default:"#377DFF" }};
+        color: #fff;
+        transform: scale(1.05);
+    }
+    .contact-info-card h5 {
+        font-size: 0.9rem;
+        color: #999;
+        font-weight: 500;
+        margin-bottom: 8px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    .contact-info-card .info-value {
+        font-size: 1.05rem;
+        font-weight: 600;
+        color: #1a1a2e;
+        line-height: 1.6;
+        word-break: break-word;
+    }
+    .contact-info-card a.info-value {
+        text-decoration: none;
+        color: #1a1a2e;
+        transition: color 0.2s;
+    }
+    .contact-info-card a.info-value:hover {
+        color: {{ site_settings.primary_color|default:"#377DFF" }};
+    }
+
+    /* ===== Contact Form ===== */
+    .contact-form-section {
+        max-width: 720px;
+        margin: 0 auto;
+        padding: 40px 20px 80px;
+    }
+    .contact-form-card {
+        background: #fff;
+        border-radius: 24px;
+        padding: 45px 40px;
+        box-shadow: 0 8px 40px rgba(0,0,0,0.06);
+        border: 1px solid #f0f0f5;
+    }
+    .contact-form-header {
+        text-align: center;
+        margin-bottom: 35px;
+    }
+    .contact-form-header .form-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 64px;
+        height: 64px;
+        border-radius: 18px;
+        background: {{ site_settings.primary_color|default:"#377DFF" }}11;
+        color: {{ site_settings.primary_color|default:"#377DFF" }};
+        font-size: 1.7rem;
+        margin-bottom: 16px;
+    }
+    .contact-form-header h2 {
+        font-size: 1.6rem;
+        font-weight: 700;
+        color: #1a1a2e;
+        margin-bottom: 8px;
+    }
+    .contact-form-header p {
+        color: #888;
+        font-size: 0.95rem;
+        margin: 0;
+    }
+    .contact-form-card .form-label {
+        font-weight: 600;
+        color: #1a1a2e;
+        font-size: 0.9rem;
+        margin-bottom: 6px;
+    }
+    .contact-form-card .form-control {
+        border-radius: 12px;
+        border: 1.5px solid #e8e8ef;
+        padding: 12px 16px;
+        font-size: 0.95rem;
+        transition: all 0.2s;
+        background: #fafafd;
+    }
+    .contact-form-card .form-control:focus {
+        border-color: {{ site_settings.primary_color|default:"#377DFF" }};
+        box-shadow: 0 0 0 4px {{ site_settings.primary_color|default:"#377DFF" }}15;
+        background: #fff;
+    }
+    .contact-form-card textarea.form-control {
+        min-height: 130px;
+        resize: vertical;
+    }
+    .contact-form-card .btn-submit {
+        background: {{ site_settings.primary_color|default:"#377DFF" }};
+        color: #fff;
+        border: none;
+        border-radius: 12px;
+        padding: 14px 32px;
+        font-size: 1rem;
+        font-weight: 600;
+        width: 100%;
+        transition: all 0.3s;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+    }
+    .contact-form-card .btn-submit:hover {
+        background: {{ site_settings.link_hover|default:"#1366ff" }};
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px {{ site_settings.primary_color|default:"#377DFF" }}40;
+    }
+    .contact-form-card .form-text {
+        color: #aaa;
+        font-size: 0.85rem;
+        text-align: center;
+        margin-top: 16px;
+    }
+    .contact-form-card .alert-danger {
+        background: #fde8ef;
+        color: #e74c6f;
+        border: none;
+        border-radius: 12px;
+        padding: 14px 18px;
+        font-size: 0.9rem;
+    }
+    .contact-form-card .text-danger {
+        font-size: 0.85rem;
+        margin-top: 4px;
+    }
+
+    /* ===== ریسپانسیو ===== */
+    @media (max-width: 768px) {
+        .contact-hero {
+            padding: 60px 0 80px;
+        }
+        .contact-hero h1 {
+            font-size: 1.8rem;
+        }
+        .contact-hero p {
+            font-size: 0.95rem;
+        }
+        .contact-info-section {
+            margin-top: -40px;
+            padding: 0 14px 40px;
+        }
+        .contact-info-grid {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 14px;
+        }
+        .contact-info-card {
+            padding: 22px 18px;
+        }
+        .contact-info-card .info-icon {
+            width: 50px;
+            height: 50px;
+            font-size: 1.3rem;
+        }
+        .contact-info-card .info-value {
+            font-size: 0.95rem;
+        }
+        .contact-form-card {
+            padding: 30px 22px;
+        }
+        .contact-form-header h2 {
+            font-size: 1.3rem;
+        }
+    }
+    @media (max-width: 480px) {
+        .contact-info-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+{% endblock %}
+
 {% block content %}
-        <!-- Hero -->
-        <div class="position-relative bg-img-start" style="background-image: url(./assets/svg/components/card-11.svg);">
-            <div class="container content-space-t-3 content-space-t-lg-5 content-space-b-2 position-relative zi-2">
-                <div class="w-md-75 w-lg-50 text-center mx-md-auto mb-5 mb-md-9">
-                    <h1>{{site_settings.contact_title}}</h1>
-                    <p>{{site_settings.contact_content}}</p>
-                </div>
 
-                <div class="row">
-                    <div class="col-md-4 mb-3 mb-md-0">
-                        <!-- Card -->
-                        <a class="card card-transition text-center h-100" href="#">
-                            <div class="card-body">
-                                <div class="svg-icon text-primary mb-3">
-                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
-                                        xmlns="http://www.w3.org/2000/svg">
-                                        <path opacity="0.3" fill-rule="evenodd" clip-rule="evenodd"
-                                            d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z"
-                                            fill="#035A4B"></path>
-                                        <path fill-rule="evenodd" clip-rule="evenodd"
-                                            d="M10.591 13.209V14.868H11.851C14.392 14.868 16.387 12.915 16.387 10.395C16.387 7.875 14.392 5.922 11.851 5.922C9.31 5.922 7.336 7.875 7.336 10.395H9.121C9.121 8.799 10.234 7.581 11.851 7.581C13.447 7.581 14.602 8.799 14.602 10.395C14.602 11.991 13.447 13.209 11.851 13.209H10.591ZM12 16C11.4477 16 11 16.4477 11 17C11 17.5523 11.4477 18 12 18C12.5523 18 13 17.5523 13 17C13 16.4477 12.5523 16 12 16Z"
-                                            fill="#035A4B"></path>
-                                    </svg>
-
-                                </div>
-
-                                <h4 class="card-title">مشاوره خرید</h4>
-                                <p class="card-text text-body">دانش کافی در زمان خرید داشته باشید</p>
-                            </div>
-
-                            <div class="card-footer pt-0">
-                                <span class="card-link">تماس با پشتیبانی <i
-                                        class="bi-chevron-left small ms-1"></i></span>
-                            </div>
-                        </a>
-                        <!-- End Card -->
-                    </div>
-                    <!-- End Col -->
-
-                    <div class="col-md-4 mb-3 mb-md-0">
-                        <!-- Card -->
-                        <a class="card card-transition text-center h-100" href="#">
-                            <div class="card-body">
-                                <div class="svg-icon text-primary mb-3">
-                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
-                                        xmlns="http://www.w3.org/2000/svg">
-                                        <path fill-rule="evenodd" clip-rule="evenodd"
-                                            d="M22.1671 18.1421C22.4827 18.4577 23.0222 18.2331 23.0206 17.7868L23.0039 13.1053V5.52632C23.0039 4.13107 21.8729 3 20.4776 3H8.68815C7.2929 3 6.16183 4.13107 6.16183 5.52632V9H13C14.6568 9 16 10.3431 16 12V15.6316H19.6565L22.1671 18.1421Z"
-                                            fill="#035A4B"></path>
-                                        <path opacity="0.3" fill-rule="evenodd" clip-rule="evenodd"
-                                            d="M1.98508 18V13C1.98508 11.8954 2.88051 11 3.98508 11H11.9851C13.0896 11 13.9851 11.8954 13.9851 13V18C13.9851 19.1046 13.0896 20 11.9851 20H4.10081L2.85695 21.1905C2.53895 21.4949 2.01123 21.2695 2.01123 20.8293V18.3243C1.99402 18.2187 1.98508 18.1104 1.98508 18ZM5.99999 14.5C5.99999 14.2239 6.22385 14 6.49999 14H11.5C11.7761 14 12 14.2239 12 14.5C12 14.7761 11.7761 15 11.5 15H6.49999C6.22385 15 5.99999 14.7761 5.99999 14.5ZM9.49999 16C9.22385 16 8.99999 16.2239 8.99999 16.5C8.99999 16.7761 9.22385 17 9.49999 17H11.5C11.7761 17 12 16.7761 12 16.5C12 16.2239 11.7761 16 11.5 16H9.49999Z"
-                                            fill="#035A4B"></path>
-                                    </svg>
-
-                                </div>
-
-                                <h4 class="card-title">سوالات متداول</h4>
-                                <p class="card-text text-body">سوالات خود را از ما بپرسید و پیدا کنین</p>
-                            </div>
-
-                            <div class="card-footer pt-0">
-                                <span class="card-link">مشاهده سوالات<i class="bi-chevron-left small ms-1"></i></span>
-                            </div>
-                        </a>
-                        <!-- End Card -->
-                    </div>
-                    <!-- End Col -->
-
-                    <div class="col-md-4">
-                        <!-- Card -->
-                        <a class="card card-transition text-center h-100" href="#">
-                            <div class="card-body">
-                                <div class="svg-icon text-primary mb-3">
-                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
-                                        xmlns="http://www.w3.org/2000/svg">
-                                        <path opacity="0.3"
-                                            d="M19.0687 17.9688H11.0687C10.4687 17.9688 10.0687 18.3687 10.0687 18.9688V19.9688C10.0687 20.5688 10.4687 20.9688 11.0687 20.9688H19.0687C19.6687 20.9688 20.0687 20.5688 20.0687 19.9688V18.9688C20.0687 18.3687 19.6687 17.9688 19.0687 17.9688Z"
-                                            fill="#035A4B"></path>
-                                        <path
-                                            d="M4.06875 17.9688C3.86875 17.9688 3.66874 17.8688 3.46874 17.7688C2.96874 17.4688 2.86875 16.8688 3.16875 16.3688L6.76874 10.9688L3.16875 5.56876C2.86875 5.06876 2.96874 4.46873 3.46874 4.16873C3.96874 3.86873 4.56875 3.96878 4.86875 4.46878L8.86875 10.4688C9.06875 10.7688 9.06875 11.2688 8.86875 11.5688L4.86875 17.5688C4.66875 17.7688 4.36875 17.9688 4.06875 17.9688Z"
-                                            fill="#035A4B"></path>
-                                    </svg>
-
-                                </div>
-
-                                <h4 class="card-title">کمک به توسعه</h4>
-                                <p class="card-text text-body">پیشنهادات سازنده خود را به توسعه دهندگان انتقال دهید</p>
-                            </div>
-
-                            <div class="card-footer pt-0">
-                                <span class="card-link">تماس با پشتیبانی<i class="bi-chevron-left small ms-1"></i></span>
-                            </div>
-                        </a>
-                        <!-- End Card -->
-                    </div>
-                    <!-- End Col -->
-                </div>
-                <!-- End Row -->
-            </div>
-
-            <!-- Shape -->
-            <div class="shape shape-bottom zi-1">
-                <svg width="3000" height="500" viewBox="0 0 3000 500" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M0 500H3000V0L0 500Z" fill="#fff"></path>
-                </svg>
-            </div>
-            <!-- End Shape -->
+<!-- ===== Hero ===== -->
+<section class="contact-hero">
+    <div class="container">
+        <div class="hero-icon">
+            <i class="{{ contactsetting.icon }}"></i>
         </div>
-        <!-- End Hero -->
+        <h1>{{ contactsetting.contact_title|default:"با ما در تماس باشید" }}</h1>
+        {% if contactsetting.contact_content %}
+            <p>{{ contactsetting.contact_content }}</p>
+        {% else %}
+            <p>تیم پشتیبانی ما آماده پاسخگویی به سوالات، پیشنهادات و انتقادات شماست. از طریق راه‌های زیر با ما در ارتباط باشید.</p>
+        {% endif %}
+    </div>
+</section>
 
+<!-- ===== Contact Info ===== -->
+<section class="contact-info-section">
+    <div class="contact-info-grid">
+
+        {% if contactsetting.phone %}
+        <a href="tel:{{ contactsetting.phone }}" class="contact-info-card">
+            <div class="info-icon">
+                <i class="bi bi-telephone-fill"></i>
+            </div>
+            <h5>تلفن تماس</h5>
+            <div class="info-value">{{ contactsetting.phone }}</div>
+        </a>
+        {% endif %}
+
+        {% if contactsetting.email %}
+        <a href="mailto:{{ contactsetting.email }}" class="contact-info-card">
+            <div class="info-icon">
+                <i class="bi bi-envelope-fill"></i>
+            </div>
+            <h5>ایمیل</h5>
+            <div class="info-value">{{ contactsetting.email }}</div>
+        </a>
+        {% endif %}
+
+        {% if contactsetting.address %}
+        <div class="contact-info-card">
+            <div class="info-icon">
+                <i class="bi bi-geo-alt-fill"></i>
+            </div>
+            <h5>آدرس</h5>
+            <div class="info-value">{{ contactsetting.address }}</div>
+        </div>
+        {% endif %}
+
+        {% if site_settings.developer_name %}
+        <a href="{{ site_settings.developer_url|default:'#' }}" 
+           class="contact-info-card"
+           {% if site_settings.developer_url %}target="_blank" rel="noopener"{% endif %}>
+            <div class="info-icon">
+                <i class="bi bi-code-slash"></i>
+            </div>
+            <h5>توسعه‌دهنده</h5>
+            <div class="info-value">{{ site_settings.developer_name }}</div>
+        </a>
+        {% endif %}
+
+    </div>
+</section>
+
+<!-- ===== Contact Form ===== -->
+<section class="contact-form-section">
+    <div class="contact-form-card">
         
-        <!-- Contact Form -->
-        <div class="container content-space-1 content-space-lg-1">
-            <div class="mx-auto" style="max-width: 35rem;">
-                <!-- Card -->
-                <div class="card">
-                    <div class="card-body">
-                        <!-- Heading -->
-                        <div class="text-center mb-5 mb-md-9">
-                            <h2>فرم تماس با پشتیبانی</h2>
-                            <p>سوال یا نظرات خود را مطرح کنین</p>
-                        </div>
-                        <!-- End Heading -->
+        <div class="contact-form-header">
+            <div class="form-icon">
+                <i class="bi bi-chat-dots-fill"></i>
+            </div>
+            <h2>فرم تماس با پشتیبانی</h2>
+            <p>سوال یا نظرات خود را مطرح کنید</p>
+        </div>
 
-                        <!-- Form -->
-                        <form action="." method="post">
-                            {% csrf_token %}
-                            
-                            <!-- نمایش خطاهای کلی فرم -->
-                            {% if form.non_field_errors %}
-                            <div class="alert alert-danger">
-                                {% for error in form.non_field_errors %}
-                                    {{ error }}
-                                {% endfor %}
-                            </div>
-                            {% endif %}
+        <form action="." method="post" novalidate>
+            {% csrf_token %}
 
-                            <div class="row gx-3">
-                                <div class="col-sm-6">
-                                    <!-- Form -->
-                                    <div class="mb-3">
-                                        <label class="form-label" for="{{ form.name.id_for_label }}">نام</label>
-                                        {{ form.name }}
-                                        {% if form.name.errors %}
-                                        <div class="text-danger small mt-1">{{ form.name.errors }}</div>
-                                        {% endif %}
-                                    </div>
-                                    <!-- End Form -->
-                                </div>
-                                <!-- End Col -->
+            {% if form.non_field_errors %}
+            <div class="alert alert-danger mb-4">
+                {% for error in form.non_field_errors %}
+                    {{ error }}
+                {% endfor %}
+            </div>
+            {% endif %}
 
-                                <div class="col-sm-6">
-                                    <!-- Form -->
-                                    <div class="mb-3">
-                                        <label class="form-label" for="{{ form.last_name.id_for_label }}">نام خانوادگی</label>
-                                        {{ form.last_name }}
-                                        {% if form.last_name.errors %}
-                                        <div class="text-danger small mt-1">{{ form.last_name.errors }}</div>
-                                        {% endif %}
-                                    </div>
-                                    <!-- End Form -->
-                                </div>
-                                <!-- End Col -->
-                            </div>
-                            <!-- End Row -->
-
-                            <div class="row gx-3">
-                                <div class="col-sm-6">
-                                    <!-- Form -->
-                                    <div class="mb-3">
-                                        <label class="form-label" for="{{ form.email.id_for_label }}">آدرس ایمیل</label>
-                                        {{ form.email }}
-                                        {% if form.email.errors %}
-                                        <div class="text-danger small mt-1">{{ form.email.errors }}</div>
-                                        {% endif %}
-                                    </div>
-                                    <!-- End Form -->
-                                </div>
-                                <!-- End Col -->
-
-                                <div class="col-sm-6">
-                                    <!-- Form -->
-                                    <div class="mb-3">
-                                        <label class="form-label" for="{{ form.phone_number.id_for_label }}">شماره همراه <span
-                                                class="form-label-secondary">(اختیاری)</span></label>
-                                        {{ form.phone_number }}
-                                        {% if form.phone_number.errors %}
-                                        <div class="text-danger small mt-1">{{ form.phone_number.errors }}</div>
-                                        {% endif %}
-                                    </div>
-                                    <!-- End Form -->
-                                </div>
-                                <!-- End Col -->
-                            </div>
-                            <!-- End Row -->
-
-                            <!-- Form -->
-                            <div class="mb-3">
-                                <label class="form-label" for="{{ form.description.id_for_label }}">توضیحات</label>
-                                {{ form.description }}
-                                {% if form.description.errors %}
-                                <div class="text-danger small mt-1">{{ form.description.errors }}</div>
-                                {% endif %}
-                            </div>
-                            <!-- End Form -->
-
-                            <div class="d-grid">
-                                <button type="submit" class="btn btn-primary btn-lg">ارسال درخواست</button>
-                            </div>
-
-                            <div class="text-center">
-                                <p class="form-text">تیکت ها در اسرع وقت پاسخ داده خواهند شد</p>
-                            </div>
-                        </form>
-                        <!-- End Form -->
+            <div class="row gx-3">
+                <div class="col-sm-6">
+                    <div class="mb-3">
+                        <label class="form-label" for="{{ form.name.id_for_label }}">نام</label>
+                        {{ form.name }}
+                        {% if form.name.errors %}
+                        <div class="text-danger">{{ form.name.errors.0 }}</div>
+                        {% endif %}
                     </div>
                 </div>
-                <!-- End Card -->
+
+                <div class="col-sm-6">
+                    <div class="mb-3">
+                        <label class="form-label" for="{{ form.last_name.id_for_label }}">نام خانوادگی</label>
+                        {{ form.last_name }}
+                        {% if form.last_name.errors %}
+                        <div class="text-danger">{{ form.last_name.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+                </div>
             </div>
-        </div>
-        <!-- End Contact Form -->
-         
+
+            <div class="row gx-3">
+                <div class="col-sm-6">
+                    <div class="mb-3">
+                        <label class="form-label" for="{{ form.email.id_for_label }}">آدرس ایمیل</label>
+                        {{ form.email }}
+                        {% if form.email.errors %}
+                        <div class="text-danger">{{ form.email.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="col-sm-6">
+                    <div class="mb-3">
+                        <label class="form-label" for="{{ form.phone_number.id_for_label }}">
+                            شماره همراه <span style="color:#bbb; font-weight:400;">(اختیاری)</span>
+                        </label>
+                        {{ form.phone_number }}
+                        {% if form.phone_number.errors %}
+                        <div class="text-danger">{{ form.phone_number.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <label class="form-label" for="{{ form.description.id_for_label }}">توضیحات</label>
+                {{ form.description }}
+                {% if form.description.errors %}
+                <div class="text-danger">{{ form.description.errors.0 }}</div>
+                {% endif %}
+            </div>
+
+            <button type="submit" class="btn-submit">
+                <i class="bi bi-send-fill"></i>
+                ارسال درخواست
+            </button>
+
+            <p class="form-text">
+                <i class="bi bi-clock-history"></i>
+                تیکت‌ها در اسرع وقت پاسخ داده خواهند شد
+            </p>
+        </form>
+
+    </div>
+</section>
+
 {% endblock content %}
